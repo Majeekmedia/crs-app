@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Precision Ledger - Members Directory</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed": "#151c27",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-high": "#e8e8e8",
+                    "surface-tint": "#5e5e5e",
+                    "surface-container-low": "#f3f3f3",
+                    "on-error": "#ffffff",
+                    "secondary": "#585f6c",
+                    "background": "#f9f9f9",
+                    "on-secondary-container": "#5e6572",
+                    "primary-fixed-dim": "#c6c6c6",
+                    "surface-variant": "#e2e2e2",
+                    "surface-dim": "#dadada",
+                    "outline": "#7e7576",
+                    "on-surface-variant": "#4c4546",
+                    "on-background": "#1b1b1b",
+                    "primary-fixed": "#e2e2e2",
+                    "inverse-on-surface": "#f1f1f1",
+                    "inverse-primary": "#c6c6c6",
+                    "on-secondary-fixed-variant": "#404754",
+                    "surface": "#f9f9f9",
+                    "secondary-container": "#dce2f3",
+                    "inverse-surface": "#303030",
+                    "on-secondary": "#ffffff",
+                    "surface-container-highest": "#e2e2e2",
+                    "on-primary-fixed": "#1b1b1b",
+                    "surface-bright": "#f9f9f9",
+                    "primary": "#000000",
+                    "primary-container": "#1b1b1b",
+                    "error": "#ba1a1a",
+                    "on-primary-container": "#848484",
+                    "secondary-fixed-dim": "#c0c7d6",
+                    "outline-variant": "#cfc4c5",
+                    "tertiary": "#000000",
+                    "tertiary-fixed-dim": "#c6c6c6",
+                    "on-tertiary-fixed": "#1b1b1b",
+                    "tertiary-container": "#1b1b1b",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-container": "#848484",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#e2e2e2",
+                    "on-tertiary": "#ffffff",
+                    "on-surface": "#1b1b1b",
+                    "on-primary-fixed-variant": "#474747",
+                    "secondary-fixed": "#dce2f3",
+                    "surface-container": "#eeeeee",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-fixed-variant": "#474747"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "xs": "4px",
+                    "margin-desktop": "32px",
+                    "base": "4px",
+                    "gutter": "20px",
+                    "sm": "8px",
+                    "lg": "24px",
+                    "xl": "40px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "numeric-data": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "display": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "numeric-data": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                    "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                    "display": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                    "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "500" }],
+                    "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                    "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                    "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                    "headline-lg": ["30px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        input[type="search"]::-webkit-search-cancel-button {
+            -webkit-appearance: none;
+            appearance: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex antialiased">
+<!-- SideNavBar Component -->
+<nav class="bg-surface dark:bg-surface-dim font-body-md text-body-md h-screen w-64 fixed left-0 top-0 border-r border-outline-variant dark:border-outline flex flex-col h-full py-lg px-md z-20">
+<!-- Header -->
+<div class="flex items-center gap-sm mb-xl px-sm">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" style="font-size: 18px;">account_balance</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface dark:text-surface-bright">Precision Ledger</h1>
+<p class="font-label-caps text-label-caps text-secondary">Financial Admin</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<ul class="flex flex-col gap-xs flex-1">
+<li>
+<a class="flex items-center gap-md px-sm py-sm rounded-DEFAULT text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors cursor-pointer duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-sm py-sm rounded-DEFAULT text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors cursor-pointer duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="event_note">event_note</span>
+<span>Contribution Plans</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-sm py-sm rounded-DEFAULT text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors cursor-pointer duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Payments</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-sm py-sm rounded-DEFAULT text-primary font-bold border-r-4 border-primary dark:text-primary-fixed dark:border-primary-fixed bg-surface-container-low dark:bg-surface-container-highest cursor-pointer duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="group" style="font-variation-settings: 'FILL' 1;">group</span>
+<span>Members</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-sm py-sm rounded-DEFAULT text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors cursor-pointer duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span>Reconciliation</span>
+</a>
+</li>
+</ul>
+<!-- User Profile -->
+<div class="mt-auto border-t border-outline-variant pt-md">
+<div class="flex items-center gap-sm px-sm cursor-pointer hover:bg-surface-container-low rounded-DEFAULT p-2 transition-colors">
+<img alt="Administrator profile" class="w-8 h-8 rounded-full border border-outline-variant" data-alt="A small circular profile picture of a professional adult male with short dark hair, wearing a dark gray collared shirt against a neutral bright background. The lighting is soft and studio quality, fitting a modern corporate identity aesthetic. The expression is neutral and professional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRb-ohuVARDuRzaa2QmBFyp2yzFSwJWDj8gRu9U52SSwI7E7Tep9H1XF9JRIFSqaFKCR87gK84sIdkHqU5bxnn1gI7nCPEvOFBEnDaK4aFCLyevO4FTo5LMeUYPFwmIEyX2lys1Ypuvbw0OLxQ3woDPKzaW-O8Z0H11kjVMUbasy3vmoF2Eq-yAXCY0CqRl5dyFAQt5iIlvfTIFqDL3eP6dCL52ReT-hcaAVPDYYhxKethU2vk5TguGE2WC9DO_uF41ySCfWsawg"/>
+<div class="flex-1 min-w-0">
+<p class="font-body-md text-body-md text-on-surface truncate">Admin User</p>
+<p class="font-label-caps text-label-caps text-secondary truncate">System Admin</p>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col min-w-0 ml-64">
+<!-- TopNavBar Component -->
+<header class="bg-surface dark:bg-surface-dim font-body-md text-body-md docked full-width top-0 sticky border-b border-outline-variant dark:border-outline flex justify-between items-center h-16 px-margin-desktop w-full z-10">
+<div class="flex items-center flex-1">
+<!-- Search bar on left as per JSON -->
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-secondary pointer-events-none" style="font-size: 20px;">search</span>
+<input class="w-full pl-9 pr-4 py-1.5 bg-surface-container-lowest border border-outline-variant rounded-DEFAULT font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-secondary" placeholder="Search system..." type="search"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 text-secondary hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-secondary hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<!-- Canvas / Page Content -->
+<main class="flex-1 p-margin-desktop bg-background">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md mb-xl">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Members Directory</h2>
+<p class="font-body-md text-body-md text-secondary">Manage registered members, their active plans, and financial standing.</p>
+</div>
+<div class="flex items-center gap-sm">
+<button class="bg-surface-container-lowest border border-outline-variant text-on-surface font-body-md text-body-md px-4 py-2 rounded-DEFAULT hover:bg-surface-container-low transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 18px;">download</span>
+                        Export List
+                    </button>
+<button class="bg-primary text-on-primary font-body-md text-body-md px-4 py-2 rounded-DEFAULT hover:bg-surface-tint transition-colors flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined" style="font-size: 18px;">person_add</span>
+                        New Member
+                    </button>
+</div>
+</div>
+<!-- Directory Toolbar -->
+<div class="flex flex-col md:flex-row justify-between items-center gap-md mb-lg">
+<!-- Dedicated Member Search -->
+<div class="relative w-full md:w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-DEFAULT font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all placeholder:text-secondary shadow-sm" placeholder="Filter by name, ID, or phone..." type="search"/>
+</div>
+<div class="flex items-center gap-xs text-secondary w-full md:w-auto justify-end">
+<span class="font-label-caps text-label-caps mr-2">Filter By:</span>
+<select class="bg-surface-container-lowest border border-outline-variant text-on-surface font-body-md text-body-md py-1.5 pl-3 pr-8 rounded-DEFAULT focus:outline-none focus:ring-1 focus:ring-primary shadow-sm cursor-pointer">
+<option>Status: All</option>
+<option>Status: Active</option>
+<option>Status: Inactive</option>
+</select>
+<button aria-label="Grid View" class="p-1.5 border border-outline-variant rounded-DEFAULT bg-surface-container-lowest hover:bg-surface-container-low transition-colors ml-2">
+<span class="material-symbols-outlined" style="font-size: 20px;">grid_view</span>
+</button>
+<button aria-label="Table View" class="p-1.5 border border-outline-variant rounded-DEFAULT bg-surface-container-lowest text-primary ring-1 ring-primary hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" style="font-size: 20px;">table_rows</span>
+</button>
+</div>
+</div>
+<!-- Data Table Card (Level 1 Elevation equivalent) -->
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-lg overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface font-label-caps text-label-caps text-secondary border-b border-surface-container-high">
+<tr>
+<th class="px-md py-sm font-semibold tracking-wider w-1/4">Member Info</th>
+<th class="px-md py-sm font-semibold tracking-wider">Phone Number</th>
+<th class="px-md py-sm font-semibold tracking-wider text-center">Active Plans</th>
+<th class="px-md py-sm font-semibold tracking-wider text-right">Total Contributed</th>
+<th class="px-md py-sm font-semibold tracking-wider text-right">Outstanding Bal.</th>
+<th class="px-md py-sm w-12 text-center"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-high bg-surface-container-lowest">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
+<td class="px-md py-sm">
+<div class="flex items-center gap-sm">
+<img alt="Sarah Jenkins" class="w-10 h-10 rounded-full border border-surface-variant object-cover" data-alt="A small circular profile picture of a professional adult female with light brown hair, smiling gently against a bright, minimalist studio background. The lighting is soft and even, typical of modern corporate headshots." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBK-AAlmyj591LIVsLBUHtGZfBGbS-_Kdh4OfuRETDCsWjaOPVG9biv6Fk77yYkym41yQO8rb45yGEz9dzU6xJ_ThLyDYFS1buyNBFY4SGkerLueb_QIW3BAvlqw6EqZVshORe9_Tq7uFr_DwZj4iYxCYVy0s9AyHfSSdOKGZckHIyiBQZ3kUtdUzZAqaH6Uq13KImQlwg-k-sxBSHZO4yuiKzQ0B73TnDGjUhFY3ndzrJcScFAKJucSOekQOJ-S8FVTZCO9mYltQ"/>
+<div>
+<div class="font-body-md text-body-md font-medium text-on-surface">Sarah Jenkins</div>
+<div class="font-label-caps text-label-caps text-secondary mt-0.5">ID: PL-8842</div>
+</div>
+</div>
+</td>
+<td class="px-md py-sm font-numeric-data text-numeric-data text-on-surface-variant">
+                                    +1 (555) 234-8910
+                                </td>
+<td class="px-md py-sm text-center">
+<span class="inline-flex items-center justify-center bg-surface-variant text-on-surface-variant font-numeric-data text-numeric-data rounded-full px-2.5 py-0.5 min-w-[24px]">2</span>
+</td>
+<td class="px-md py-sm text-right font-numeric-data text-numeric-data text-on-surface">
+                                    $14,500.00
+                                </td>
+<td class="px-md py-sm text-right">
+<span class="font-numeric-data text-numeric-data text-on-surface">$0.00</span>
+</td>
+<td class="px-md py-sm text-center">
+<button class="text-secondary opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-surface-variant rounded-full">
+<span class="material-symbols-outlined" style="font-size: 20px;">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
+<td class="px-md py-sm">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full border border-surface-variant bg-surface-container-high flex items-center justify-center font-body-md text-body-md font-medium text-on-surface">
+                                            MR
+                                        </div>
+<div>
+<div class="font-body-md text-body-md font-medium text-on-surface">Marcus Rodriguez</div>
+<div class="font-label-caps text-label-caps text-secondary mt-0.5">ID: PL-8843</div>
+</div>
+</div>
+</td>
+<td class="px-md py-sm font-numeric-data text-numeric-data text-on-surface-variant">
+                                    +1 (555) 876-1123
+                                </td>
+<td class="px-md py-sm text-center">
+<span class="inline-flex items-center justify-center bg-surface-variant text-on-surface-variant font-numeric-data text-numeric-data rounded-full px-2.5 py-0.5 min-w-[24px]">1</span>
+</td>
+<td class="px-md py-sm text-right font-numeric-data text-numeric-data text-on-surface">
+                                    $3,200.50
+                                </td>
+<td class="px-md py-sm text-right">
+<span class="font-numeric-data text-numeric-data text-error font-medium">$450.00</span>
+</td>
+<td class="px-md py-sm text-center">
+<button class="text-secondary opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-surface-variant rounded-full">
+<span class="material-symbols-outlined" style="font-size: 20px;">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
+<td class="px-md py-sm">
+<div class="flex items-center gap-sm">
+<img alt="David Chen" class="w-10 h-10 rounded-full border border-surface-variant object-cover" data-alt="A small circular profile picture of a professional adult male of Asian descent, wearing glasses and a light blue collared shirt. The background is a blurred, minimal corporate office setting. High key lighting emphasizes clarity and professionalism." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPWt0yt_MiS3KghsXb0C-ijj-qWWxUumQmxxjXBQsZexxKQY8bbknKhPpqwIgtZ7hLTj020tcS3YWJUsJaFBZK5MsRhL3wD5lLliuRjr2Y_mm0dHPqfO83Hi_zmAFRhJ3vU4yeUaVDlUyOe3006Vw5Utsq_gQVMCt24XNvD9TSto1Dw5V14e2e0tLm7e-JUOzfJCmRTlDVNXkBC3oy2_V_1I4kMDwcC_MKvwM3oSlwy1xvM9gaJ6NOe_MCKXfKtGR4GiOWHbzYuA"/>
+<div>
+<div class="font-body-md text-body-md font-medium text-on-surface">David Chen</div>
+<div class="font-label-caps text-label-caps text-secondary mt-0.5">ID: PL-8845</div>
+</div>
+</div>
+</td>
+<td class="px-md py-sm font-numeric-data text-numeric-data text-on-surface-variant">
+                                    +1 (555) 443-9099
+                                </td>
+<td class="px-md py-sm text-center">
+<span class="inline-flex items-center justify-center bg-surface-variant text-on-surface-variant font-numeric-data text-numeric-data rounded-full px-2.5 py-0.5 min-w-[24px]">3</span>
+</td>
+<td class="px-md py-sm text-right font-numeric-data text-numeric-data text-on-surface">
+                                    $28,900.00
+                                </td>
+<td class="px-md py-sm text-right">
+<span class="font-numeric-data text-numeric-data text-on-surface">$0.00</span>
+</td>
+<td class="px-md py-sm text-center">
+<button class="text-secondary opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-surface-variant rounded-full">
+<span class="material-symbols-outlined" style="font-size: 20px;">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
+<td class="px-md py-sm">
+<div class="flex items-center gap-sm">
+<img alt="Elena Rostova" class="w-10 h-10 rounded-full border border-surface-variant object-cover" data-alt="A small circular profile picture of a professional adult female with dark hair pulled back, wearing a minimalist black top. The background is a stark, pure white. The aesthetic is extremely modern, clean, and disciplined, fitting a financial data interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_HWGSt-vbJ9ZMZsu_00wQmrDKuXL8RxJhPRy-pVGqEckpePc8mqy704jg0GXkZjJdaqB-bKRXC6mgwc46HxsH4c4kg2x2aJbXnSWAdPYFb5p1TnIt8dllozTbKfG-mej8VpU0QC9WJl539uODZRmJaYUNrmCpe1I1htFu_f3NpvolUrF0kV4TEW-2HJcesm7BiOBzO9moXxv7c8Wg_uG4BeK2pWTu07VI5uZktGaVJHJdU0y9njrMvzeLf7YrL9RwU5zaydOqsg"/>
+<div>
+<div class="font-body-md text-body-md font-medium text-on-surface">Elena Rostova</div>
+<div class="font-label-caps text-label-caps text-secondary mt-0.5">ID: PL-8848</div>
+</div>
+</div>
+</td>
+<td class="px-md py-sm font-numeric-data text-numeric-data text-on-surface-variant">
+                                    +1 (555) 776-3342
+                                </td>
+<td class="px-md py-sm text-center">
+<span class="inline-flex items-center justify-center bg-surface-variant text-on-surface-variant font-numeric-data text-numeric-data rounded-full px-2.5 py-0.5 min-w-[24px]">1</span>
+</td>
+<td class="px-md py-sm text-right font-numeric-data text-numeric-data text-on-surface">
+                                    $8,450.00
+                                </td>
+<td class="px-md py-sm text-right">
+<span class="font-numeric-data text-numeric-data text-on-surface">$0.00</span>
+</td>
+<td class="px-md py-sm text-center">
+<button class="text-secondary opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-surface-variant rounded-full">
+<span class="material-symbols-outlined" style="font-size: 20px;">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination / Footer -->
+<div class="bg-surface px-md py-sm border-t border-surface-container-high flex items-center justify-between text-secondary">
+<span class="font-body-md text-body-md">Showing 1 to 4 of 128 entries</span>
+<div class="flex items-center gap-xs">
+<button class="p-1 rounded-DEFAULT hover:bg-surface-container-low transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined" style="font-size: 20px;">chevron_left</span>
+</button>
+<span class="font-numeric-data text-numeric-data px-2">1</span>
+<button class="p-1 rounded-DEFAULT hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" style="font-size: 20px;">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

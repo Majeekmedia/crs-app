@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard - Precision Ledger</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed": "#151c27",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-high": "#e8e8e8",
+                      "surface-tint": "#5e5e5e",
+                      "surface-container-low": "#f3f3f3",
+                      "on-error": "#ffffff",
+                      "secondary": "#585f6c",
+                      "background": "#f9f9f9",
+                      "on-secondary-container": "#5e6572",
+                      "primary-fixed-dim": "#c6c6c6",
+                      "surface-variant": "#e2e2e2",
+                      "surface-dim": "#dadada",
+                      "outline": "#7e7576",
+                      "on-surface-variant": "#4c4546",
+                      "on-background": "#1b1b1b",
+                      "primary-fixed": "#e2e2e2",
+                      "inverse-on-surface": "#f1f1f1",
+                      "inverse-primary": "#c6c6c6",
+                      "on-secondary-fixed-variant": "#404754",
+                      "surface": "#f9f9f9",
+                      "secondary-container": "#dce2f3",
+                      "inverse-surface": "#303030",
+                      "on-secondary": "#ffffff",
+                      "surface-container-highest": "#e2e2e2",
+                      "on-primary-fixed": "#1b1b1b",
+                      "surface-bright": "#f9f9f9",
+                      "primary": "#000000",
+                      "primary-container": "#1b1b1b",
+                      "error": "#ba1a1a",
+                      "on-primary-container": "#848484",
+                      "secondary-fixed-dim": "#c0c7d6",
+                      "outline-variant": "#cfc4c5",
+                      "tertiary": "#000000",
+                      "tertiary-fixed-dim": "#c6c6c6",
+                      "on-tertiary-fixed": "#1b1b1b",
+                      "tertiary-container": "#1b1b1b",
+                      "on-primary": "#ffffff",
+                      "on-tertiary-container": "#848484",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#e2e2e2",
+                      "on-tertiary": "#ffffff",
+                      "on-surface": "#1b1b1b",
+                      "on-primary-fixed-variant": "#474747",
+                      "secondary-fixed": "#dce2f3",
+                      "surface-container": "#eeeeee",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#474747"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "xs": "4px",
+                      "margin-desktop": "32px",
+                      "base": "4px",
+                      "gutter": "20px",
+                      "sm": "8px",
+                      "lg": "24px",
+                      "xl": "40px",
+                      "margin-mobile": "16px"
+              },
+              "fontFamily": {
+                      "numeric-data": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "display": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-caps": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "headline-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "numeric-data": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                      "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                      "display": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                      "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "500" }],
+                      "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                      "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                      "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                      "headline-lg": ["30px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f9f9f9; color: #1b1b1b; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-lg min-h-screen flex">
+<!-- SideNavBar -->
+<nav class="hidden md:flex bg-surface dark:bg-surface-dim font-body-md text-body-md h-screen w-64 fixed left-0 top-0 border-r border-outline-variant dark:border-outline flex-col h-full py-lg px-md z-50">
+<div class="mb-xl px-sm">
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface dark:text-surface-bright">Precision Ledger</h1>
+<p class="text-secondary dark:text-secondary-fixed-dim text-body-md mt-xs">Financial Admin</p>
+</div>
+<ul class="flex-1 space-y-sm">
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-primary font-bold border-r-4 border-primary dark:text-primary-fixed dark:border-primary-fixed bg-surface-container-low dark:bg-surface-container-highest cursor-pointer duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span>Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors cursor-pointer duration-200" href="#">
+<span class="material-symbols-outlined">event_note</span>
+<span>Contribution Plans</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors cursor-pointer duration-200" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span>Payments</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors cursor-pointer duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>Members</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors cursor-pointer duration-200" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span>Reconciliation</span>
+</a>
+</li>
+</ul>
+<div class="mt-auto px-sm flex items-center gap-md">
+<img alt="User profile avatar" class="w-10 h-10 rounded-full border border-outline-variant" data-alt="A close up portrait of a professional corporate administrator in a bright office environment. The lighting is soft and natural, emphasizing a modern corporate aesthetic. Clean, minimalist background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDE-7HOdecc3g0vGad0HCgVvVzljUyqIwpcF0NNOzz3LSzpR0gYGIt0b1W0Y5OL7W-VPEP4Hfku6jFkDQz5au5w5b0_nIC4Puw6mXkYNbaaK8wrZ2AuF0KUsuJkWodA2C7jRA6ciajsJnPifSNNHKhSQCnsXTxIgOK2AcU9cE5i0J7y6xdXx00rwFRsLm9RPUOvvdlaRqVUJZ3DlQ8nlEw5zAyuCgL3OiWwRojzIzse8u6fAS5Cf8T__5EkGzjglc8uUHVT-wLrPQ"/>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 md:ml-64 flex flex-col min-h-screen relative">
+<!-- TopNavBar -->
+<header class="hidden md:flex bg-surface dark:bg-surface-dim font-body-md text-body-md docked full-width top-0 sticky border-b border-outline-variant dark:border-outline justify-between items-center h-16 px-margin-desktop z-40 transition-all duration-200">
+<div class="flex items-center">
+<!-- Search could go here based on "search_bar: on_left" -->
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary">search</span>
+<input class="w-full pl-10 pr-4 py-2 border border-outline-variant rounded-DEFAULT focus:border-primary focus:ring-1 focus:ring-primary outline-none text-body-md bg-surface-container-lowest transition-colors" placeholder="Search..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md text-secondary dark:text-secondary-fixed-dim">
+<button class="p-2 hover:bg-surface-container-low dark:hover:bg-surface-container-highest rounded-full transition-all duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 hover:bg-surface-container-low dark:hover:bg-surface-container-highest rounded-full transition-all duration-200">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 p-margin-mobile md:p-margin-desktop overflow-y-auto">
+<div class="mb-xl flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background">Overview</h2>
+<p class="font-body-md text-body-md text-secondary mt-base">System-wide financial summary</p>
+</div>
+</div>
+<!-- Metric Cards (Bento-ish Grid) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-xl">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-lg rounded-lg hover:shadow-sm transition-shadow">
+<div class="flex justify-between items-start mb-md">
+<span class="font-label-caps text-label-caps text-secondary uppercase">Total Active Plans</span>
+<span class="material-symbols-outlined text-secondary">event_note</span>
+</div>
+<div class="font-display text-display text-on-surface">12</div>
+<div class="mt-sm font-body-md text-body-md text-secondary flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-[#10B981]">trending_up</span>
+<span>+2 this month</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-lg rounded-lg hover:shadow-sm transition-shadow">
+<div class="flex justify-between items-start mb-md">
+<span class="font-label-caps text-label-caps text-secondary uppercase">Total Money Received</span>
+<span class="material-symbols-outlined text-secondary">payments</span>
+</div>
+<div class="font-display text-display text-on-surface">$142.5k</div>
+<div class="mt-sm font-body-md text-body-md text-secondary flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-[#10B981]">trending_up</span>
+<span>+12% vs last cycle</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-lg rounded-lg hover:shadow-sm transition-shadow">
+<div class="flex justify-between items-start mb-md">
+<span class="font-label-caps text-label-caps text-secondary uppercase">Total Outstanding</span>
+<span class="material-symbols-outlined text-secondary">account_balance_wallet</span>
+</div>
+<div class="font-display text-display text-on-surface">$28.3k</div>
+<div class="mt-sm font-body-md text-body-md text-secondary flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-error">warning</span>
+<span>4 payments overdue</span>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-primary text-on-primary border border-primary p-lg rounded-lg hover:shadow-sm transition-shadow relative overflow-hidden">
+<!-- Subtle background pattern for primary card -->
+<div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 16px 16px;"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-md">
+<span class="font-label-caps text-label-caps text-primary-fixed-dim uppercase">Profit Estimate</span>
+<span class="material-symbols-outlined text-primary-fixed-dim">monitoring</span>
+</div>
+<div class="font-display text-display text-surface-container-lowest">$18.9k</div>
+<div class="mt-sm font-body-md text-body-md text-primary-fixed-dim flex items-center gap-xs">
+<span>Projected Q3</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Section: Active Contribution Plans -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md text-on-surface">Active Contribution Plans</h3>
+<button class="bg-primary text-on-primary font-body-md text-body-md px-md py-sm rounded-DEFAULT hover:bg-primary-container transition-colors">
+                        New Plan
+                    </button>
+</div>
+<div class="p-0">
+<!-- List Header -->
+<div class="grid grid-cols-12 gap-gutter px-lg py-sm border-b border-outline-variant bg-surface">
+<div class="col-span-4 font-label-caps text-label-caps text-secondary uppercase">Plan Name &amp; Progress</div>
+<div class="col-span-3 font-label-caps text-label-caps text-secondary uppercase">Collected vs Expected</div>
+<div class="col-span-3 font-label-caps text-label-caps text-secondary uppercase">Next Payout</div>
+<div class="col-span-2 font-label-caps text-label-caps text-secondary uppercase text-right">Status</div>
+</div>
+<!-- Item 1 -->
+<div class="grid grid-cols-12 gap-gutter px-lg py-md border-b border-outline-variant items-center hover:bg-surface-container-low transition-colors">
+<div class="col-span-4">
+<div class="font-numeric-data text-numeric-data text-on-surface mb-xs">Q3 Office Equipment Fund</div>
+<!-- Progress Bar -->
+<div class="w-full bg-surface-container-high rounded-full h-2 mt-sm">
+<div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
+</div>
+</div>
+<div class="col-span-3 font-numeric-data text-numeric-data text-secondary">
+<span class="text-on-surface">$15,000</span> / $20,000
+                        </div>
+<div class="col-span-3 font-body-md text-body-md text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">person</span>
+                            Sarah Jenkins
+                        </div>
+<div class="col-span-2 text-right">
+<span class="inline-flex items-center px-2 py-1 rounded-full font-label-caps text-label-caps bg-[#D1FAE5] text-[#065F46]">Active</span>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="grid grid-cols-12 gap-gutter px-lg py-md border-b border-outline-variant items-center hover:bg-surface-container-low transition-colors">
+<div class="col-span-4">
+<div class="font-numeric-data text-numeric-data text-on-surface mb-xs">Annual Retreat 2024</div>
+<!-- Progress Bar -->
+<div class="w-full bg-surface-container-high rounded-full h-2 mt-sm">
+<div class="bg-primary h-2 rounded-full" style="width: 45%"></div>
+</div>
+</div>
+<div class="col-span-3 font-numeric-data text-numeric-data text-secondary">
+<span class="text-on-surface">$22,500</span> / $50,000
+                        </div>
+<div class="col-span-3 font-body-md text-body-md text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">person</span>
+                            Marcus Chen
+                        </div>
+<div class="col-span-2 text-right">
+<span class="inline-flex items-center px-2 py-1 rounded-full font-label-caps text-label-caps bg-[#D1FAE5] text-[#065F46]">Active</span>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="grid grid-cols-12 gap-gutter px-lg py-md border-b border-outline-variant items-center hover:bg-surface-container-low transition-colors">
+<div class="col-span-4">
+<div class="font-numeric-data text-numeric-data text-on-surface mb-xs">Software Licenses Bulk</div>
+<!-- Progress Bar -->
+<div class="w-full bg-surface-container-high rounded-full h-2 mt-sm">
+<div class="bg-outline h-2 rounded-full" style="width: 100%"></div>
+</div>
+</div>
+<div class="col-span-3 font-numeric-data text-numeric-data text-secondary">
+<span class="text-on-surface">$8,000</span> / $8,000
+                        </div>
+<div class="col-span-3 font-body-md text-body-md text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">person</span>
+                            Elena Rodriguez
+                        </div>
+<div class="col-span-2 text-right">
+<span class="inline-flex items-center px-2 py-1 rounded-full font-label-caps text-label-caps bg-surface-variant text-on-surface-variant">Completed</span>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="grid grid-cols-12 gap-gutter px-lg py-md items-center hover:bg-surface-container-low transition-colors">
+<div class="col-span-4">
+<div class="font-numeric-data text-numeric-data text-on-surface mb-xs">Q4 Marketing Push</div>
+<!-- Progress Bar -->
+<div class="w-full bg-surface-container-high rounded-full h-2 mt-sm">
+<div class="bg-primary h-2 rounded-full" style="width: 15%"></div>
+</div>
+</div>
+<div class="col-span-3 font-numeric-data text-numeric-data text-secondary">
+<span class="text-on-surface">$4,500</span> / $30,000
+                        </div>
+<div class="col-span-3 font-body-md text-body-md text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">person</span>
+                            David Kim
+                        </div>
+<div class="col-span-2 text-right">
+<span class="inline-flex items-center px-2 py-1 rounded-full font-label-caps text-label-caps bg-[#D1FAE5] text-[#065F46]">Active</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

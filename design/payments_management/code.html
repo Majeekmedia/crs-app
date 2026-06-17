@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Precision Ledger - Payments</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#151c27",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e8e8e8",
+                        "surface-tint": "#5e5e5e",
+                        "surface-container-low": "#f3f3f3",
+                        "on-error": "#ffffff",
+                        "secondary": "#585f6c",
+                        "background": "#f9f9f9",
+                        "on-secondary-container": "#5e6572",
+                        "primary-fixed-dim": "#c6c6c6",
+                        "surface-variant": "#e2e2e2",
+                        "surface-dim": "#dadada",
+                        "outline": "#7e7576",
+                        "on-surface-variant": "#4c4546",
+                        "on-background": "#1b1b1b",
+                        "primary-fixed": "#e2e2e2",
+                        "inverse-on-surface": "#f1f1f1",
+                        "inverse-primary": "#c6c6c6",
+                        "on-secondary-fixed-variant": "#404754",
+                        "surface": "#f9f9f9",
+                        "secondary-container": "#dce2f3",
+                        "inverse-surface": "#303030",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-primary-fixed": "#1b1b1b",
+                        "surface-bright": "#f9f9f9",
+                        "primary": "#000000",
+                        "primary-container": "#1b1b1b",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#848484",
+                        "secondary-fixed-dim": "#c0c7d6",
+                        "outline-variant": "#cfc4c5",
+                        "tertiary": "#000000",
+                        "tertiary-fixed-dim": "#c6c6c6",
+                        "on-tertiary-fixed": "#1b1b1b",
+                        "tertiary-container": "#1b1b1b",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#848484",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#e2e2e2",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#1b1b1b",
+                        "on-primary-fixed-variant": "#474747",
+                        "secondary-fixed": "#dce2f3",
+                        "surface-container": "#eeeeee",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#474747"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "xs": "4px",
+                        "margin-desktop": "32px",
+                        "base": "4px",
+                        "gutter": "20px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "xl": "40px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "numeric-data": ["Inter", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "display": ["Inter", "sans-serif"],
+                        "headline-md": ["Inter", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "label-caps": ["Inter", "sans-serif"],
+                        "headline-lg-mobile": ["Inter", "sans-serif"],
+                        "headline-lg": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "numeric-data": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "display": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "500" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-lg": ["30px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- SideNavBar (Shared Component) -->
+<nav class="bg-surface h-screen w-64 fixed left-0 top-0 border-r border-outline-variant flex flex-col h-full py-lg px-md z-20">
+<div class="mb-xl flex items-center gap-sm px-sm">
+<div class="w-8 h-8 rounded bg-primary text-on-primary flex items-center justify-center font-bold">P</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">Precision Ledger</h1>
+<p class="text-secondary font-label-caps text-label-caps uppercase">Financial Admin</p>
+</div>
+</div>
+<ul class="flex flex-col gap-xs flex-1">
+<li class="flex items-center gap-md px-sm py-sm rounded text-secondary hover:bg-surface-container-low transition-colors cursor-pointer duration-200">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</li>
+<li class="flex items-center gap-md px-sm py-sm rounded text-secondary hover:bg-surface-container-low transition-colors cursor-pointer duration-200">
+<span class="material-symbols-outlined" data-icon="event_note">event_note</span>
+<span>Contribution Plans</span>
+</li>
+<!-- Active State Navigation -->
+<li class="flex items-center gap-md px-sm py-sm rounded text-primary font-bold border-r-4 border-primary hover:bg-surface-container-low transition-colors cursor-pointer duration-200 bg-surface-container-lowest shadow-sm">
+<span class="material-symbols-outlined" data-icon="payments" data-weight="fill" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span>Payments</span>
+</li>
+<li class="flex items-center gap-md px-sm py-sm rounded text-secondary hover:bg-surface-container-low transition-colors cursor-pointer duration-200">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>Members</span>
+</li>
+<li class="flex items-center gap-md px-sm py-sm rounded text-secondary hover:bg-surface-container-low transition-colors cursor-pointer duration-200">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span>Reconciliation</span>
+</li>
+</ul>
+<div class="mt-auto pt-lg border-t border-outline-variant">
+<div class="flex items-center gap-sm px-sm py-sm cursor-pointer hover:bg-surface-container-low rounded transition-colors duration-200">
+<div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden">
+<img alt="Administrator profile" class="w-full h-full object-cover" data-alt="A professional headshot of a financial administrator, well-lit, corporate setting, neutral background, conveying trust and competence. Light mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCipTv-Drnn2FEa1scectzXmYCwHkO78TDPnQa8YKETxU_NL-IfF5dDc4oJbMmhZFa4ep4XJz6677oQTrg_WoVCriFL3k2iB-2iSSqNBRDyvTWsd-cipOEkuWbNgm8bnyHpNZWLoocFxPY7gEhgi6-ajhLkNSO7PTNSfqQAFUAnGyjpSb40Q5QtZMBHJAfI41yT21vO1Sa8MzQb_iFs54qqV-aSwbZqjhRcp-ApWNHt5lbcrql-YaKS3uUZfU-Kj2jAM6ljbVtpSg"/>
+</div>
+<div>
+<p class="font-body-md text-body-md font-medium text-on-surface">Admin User</p>
+<p class="font-label-caps text-label-caps text-secondary">Settings</p>
+</div>
+</div>
+</div>
+</nav>
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-surface docked full-width top-0 sticky ml-64 border-b border-outline-variant flex justify-between items-center h-16 px-margin-desktop w-[calc(100%-16rem)] z-10">
+<!-- Search Bar on Left -->
+<div class="flex items-center flex-1 max-w-md">
+<div class="relative w-full group">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-secondary group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-md py-sm pl-xl pr-sm text-body-md font-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200 placeholder:text-secondary" placeholder="Search precision ledger..." type="text"/>
+</div>
+</div>
+<!-- Trailing Icon Actions -->
+<div class="flex items-center gap-md">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-secondary hover:bg-surface-container-low transition-all duration-200 relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-error"></span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-secondary hover:bg-surface-container-low transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-xl px-margin-desktop pb-xl min-h-[calc(100vh-64px)]">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-xl">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-background mb-xs">Payments Log</h2>
+<p class="font-body-md text-body-md text-secondary">Review and allocate incoming member funds.</p>
+</div>
+<div class="flex gap-md">
+<button class="px-md py-sm rounded-md bg-surface-container-lowest border border-outline-variant text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-xs font-medium">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                    Filter
+                </button>
+<button class="px-md py-sm rounded-md bg-primary text-on-primary hover:bg-primary-container transition-colors flex items-center gap-xs font-medium shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                    Log Payment
+                </button>
+</div>
+</div>
+<!-- Metric Cards (Bento style highlight) -->
+<div class="grid grid-cols-3 gap-gutter mb-xl">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-lg">
+<p class="font-label-caps text-label-caps text-secondary mb-sm uppercase">Total Received (MTD)</p>
+<p class="font-display text-display text-on-surface tracking-tight">$142,500.00</p>
+<p class="font-body-md text-body-md text-secondary mt-xs flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">trending_up</span> +12% from last month
+                </p>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-lg">
+<p class="font-label-caps text-label-caps text-secondary mb-sm uppercase">Unallocated Funds</p>
+<p class="font-display text-display text-on-surface tracking-tight">$18,250.00</p>
+<p class="font-body-md text-body-md text-secondary mt-xs flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-primary">warning</span> Requires attention
+                </p>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-lg flex flex-col justify-center items-start">
+<p class="font-label-caps text-label-caps text-secondary mb-sm uppercase">Recent Activity</p>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden mb-xs">
+<div class="bg-primary h-full w-[85%]"></div>
+</div>
+<p class="font-body-md text-body-md text-on-surface">85% of recent deposits allocated.</p>
+</div>
+</div>
+<!-- Data Table Section -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden">
+<div class="px-lg py-md border-b border-outline-variant flex justify-between items-center bg-surface">
+<h3 class="font-headline-md text-headline-md text-on-surface">Recent Transactions</h3>
+<button class="text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant bg-surface-bright">
+<th class="px-lg py-sm font-label-caps text-label-caps text-secondary font-medium uppercase tracking-wider w-1/4">Member Name</th>
+<th class="px-lg py-sm font-label-caps text-label-caps text-secondary font-medium uppercase tracking-wider w-1/4">Amount Received</th>
+<th class="px-lg py-sm font-label-caps text-label-caps text-secondary font-medium uppercase tracking-wider w-1/4">Date</th>
+<th class="px-lg py-sm font-label-caps text-label-caps text-secondary font-medium uppercase tracking-wider w-1/4">Allocation Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-variant">
+<!-- Row 1: Unallocated (Action needed) -->
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer group">
+<td class="px-lg py-md font-body-md text-body-md text-on-surface font-medium flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-[12px]">JS</div>
+                                Jonathan Sterling
+                            </td>
+<td class="px-lg py-md font-numeric-data text-numeric-data text-on-surface group-hover:text-primary transition-colors">$4,500.00</td>
+<td class="px-lg py-md font-numeric-data text-numeric-data text-secondary">Oct 24, 2023</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-surface-variant text-on-surface-variant font-label-caps text-[10px] uppercase font-bold border border-outline-variant">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary mr-1.5"></span>
+                                    Unallocated
+                                </span>
+</td>
+</tr>
+<!-- Row 2: Allocated -->
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer group">
+<td class="px-lg py-md font-body-md text-body-md text-on-surface font-medium flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-dim flex items-center justify-center text-on-surface-variant font-bold text-[12px]">EC</div>
+                                Eleanor Chen
+                            </td>
+<td class="px-lg py-md font-numeric-data text-numeric-data text-on-surface group-hover:text-primary transition-colors">$1,200.00</td>
+<td class="px-lg py-md font-numeric-data text-numeric-data text-secondary">Oct 23, 2023</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-caps text-[10px] uppercase font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary mr-1.5"></span>
+                                    Allocated
+                                </span>
+</td>
+</tr>
+<!-- Row 3: Allocated -->
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer group">
+<td class="px-lg py-md font-body-md text-body-md text-on-surface font-medium flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-dim flex items-center justify-center text-on-surface-variant font-bold text-[12px]">MR</div>
+                                Marcus Reyes
+                            </td>
+<td class="px-lg py-md font-numeric-data text-numeric-data text-on-surface group-hover:text-primary transition-colors">$8,750.00</td>
+<td class="px-lg py-md font-numeric-data text-numeric-data text-secondary">Oct 22, 2023</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-caps text-[10px] uppercase font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary mr-1.5"></span>
+                                    Allocated
+                                </span>
+</td>
+</tr>
+<!-- Row 4: Unallocated -->
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer group">
+<td class="px-lg py-md font-body-md text-body-md text-on-surface font-medium flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-[12px]">AT</div>
+                                Amara Thompson
+                            </td>
+<td class="px-lg py-md font-numeric-data text-numeric-data text-on-surface group-hover:text-primary transition-colors">$3,100.00</td>
+<td class="px-lg py-md font-numeric-data text-numeric-data text-secondary">Oct 21, 2023</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-surface-variant text-on-surface-variant font-label-caps text-[10px] uppercase font-bold border border-outline-variant">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary mr-1.5"></span>
+                                    Unallocated
+                                </span>
+</td>
+</tr>
+<!-- Row 5: Allocated -->
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer group">
+<td class="px-lg py-md font-body-md text-body-md text-on-surface font-medium flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-dim flex items-center justify-center text-on-surface-variant font-bold text-[12px]">LD</div>
+                                Lucas Davies
+                            </td>
+<td class="px-lg py-md font-numeric-data text-numeric-data text-on-surface group-hover:text-primary transition-colors">$500.00</td>
+<td class="px-lg py-md font-numeric-data text-numeric-data text-secondary">Oct 20, 2023</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-caps text-[10px] uppercase font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary mr-1.5"></span>
+                                    Allocated
+                                </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Pagination/Footer -->
+<div class="px-lg py-sm border-t border-outline-variant bg-surface flex justify-between items-center">
+<p class="font-body-md text-body-md text-secondary">Showing 1-5 of 142 transactions</p>
+<div class="flex gap-xs">
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-secondary hover:bg-surface-container-low disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-secondary hover:bg-surface-container-low">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

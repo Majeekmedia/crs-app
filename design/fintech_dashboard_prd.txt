@@ -1,0 +1,87 @@
+# UI/UX DESIGN SPECIFICATION
+## Design Style
+- Clean fintech dashboard
+- Minimal UI
+- Mobile-first responsive design
+- Inspired by banking apps (simple, structured, not flashy)
+---
+## 1. Dashboard Page
+### Components:
+- Total Active Plans (card)
+- Total Money Received (card)
+- Total Outstanding (card)
+- Profit Estimate (card)
+### Section:
+- List of active contribution plans:
+  - Plan name
+  - Progress bar (collected vs expected)
+  - Next payout person
+  - Status (active/completed)
+---
+## 2. Contribution Plans Page
+### Table Layout:
+- Plan Name
+- Contribution Amount
+- Cycle Duration
+- Members Count
+- Total Expected
+- Total Received
+- Profit per cycle
+- Status
+Button:
+- Create new plan
+---
+## 3. Plan Detail Page
+### Sections:
+#### A. Members List
+- Name
+- Slot number
+- Payment status (✔ / ❌)
+#### B. Contribution Cycle Tracker
+- Current cycle number
+- Who has paid
+- Who is pending
+#### C. Payout Tracker
+- Current payout recipient
+- Completed payouts history
+---
+## 4. Payments Page
+### Table:
+- Member name
+- Amount received
+- Date
+- Allocation status (allocated/unallocated)
+Click payment → open allocation modal
+---
+## 5. Allocation Modal
+- Show incoming payment
+- Show member’s active plans
+- Suggested split allocation
+- Manual adjust sliders
+- Confirm allocation button
+---
+## 6. Members Page
+- Member name
+- Phone number
+- Active plans
+- Total contributed
+- Outstanding balance
+---
+## 7. Reconciliation Dashboard (MOST IMPORTANT)
+### Section 1: Bank View
+- Total money in system
+- Recent payments list
+### Section 2: Plan Breakdown
+- Plan A → Expected vs Received
+- Plan B → Expected vs Received
+### Section 3: Allocation Status
+- Fully allocated funds
+- Partially allocated funds
+- Unallocated funds
+---
+## Visual Direction
+- White background
+- Light gray cards
+- Green = paid
+- Orange = pending
+- Red = overdue

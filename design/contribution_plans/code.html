@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Contribution Plans - Precision Ledger</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#151c27",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e8e8e8",
+                        "surface-tint": "#5e5e5e",
+                        "surface-container-low": "#f3f3f3",
+                        "on-error": "#ffffff",
+                        "secondary": "#585f6c",
+                        "background": "#f9f9f9",
+                        "on-secondary-container": "#5e6572",
+                        "primary-fixed-dim": "#c6c6c6",
+                        "surface-variant": "#e2e2e2",
+                        "surface-dim": "#dadada",
+                        "outline": "#7e7576",
+                        "on-surface-variant": "#4c4546",
+                        "on-background": "#1b1b1b",
+                        "primary-fixed": "#e2e2e2",
+                        "inverse-on-surface": "#f1f1f1",
+                        "inverse-primary": "#c6c6c6",
+                        "on-secondary-fixed-variant": "#404754",
+                        "surface": "#f9f9f9",
+                        "secondary-container": "#dce2f3",
+                        "inverse-surface": "#303030",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-primary-fixed": "#1b1b1b",
+                        "surface-bright": "#f9f9f9",
+                        "primary": "#000000",
+                        "primary-container": "#1b1b1b",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#848484",
+                        "secondary-fixed-dim": "#c0c7d6",
+                        "outline-variant": "#cfc4c5",
+                        "tertiary": "#000000",
+                        "tertiary-fixed-dim": "#c6c6c6",
+                        "on-tertiary-fixed": "#1b1b1b",
+                        "tertiary-container": "#1b1b1b",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#848484",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#e2e2e2",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#1b1b1b",
+                        "on-primary-fixed-variant": "#474747",
+                        "secondary-fixed": "#dce2f3",
+                        "surface-container": "#eeeeee",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#474747"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "xs": "4px",
+                        "margin-desktop": "32px",
+                        "base": "4px",
+                        "gutter": "20px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "xl": "40px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "numeric-data": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "numeric-data": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "display": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "500" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-lg": ["30px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #f9f9f9; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-fill { font-variation-settings: 'FILL' 1; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex antialiased">
+<!-- SideNavBar -->
+<nav class="h-screen w-64 fixed left-0 top-0 bg-surface dark:bg-surface-dim border-r border-outline-variant dark:border-outline flex flex-col py-lg px-md z-20 hidden md:flex">
+<div class="mb-xl px-sm">
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface dark:text-surface-bright">Precision Ledger</h1>
+<p class="text-secondary font-body-md text-body-md mt-xs">Financial Admin</p>
+</div>
+<ul class="flex flex-col gap-sm flex-grow">
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors cursor-pointer duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm text-primary font-bold border-r-4 border-primary dark:text-primary-fixed dark:border-primary-fixed hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors cursor-pointer duration-200 bg-surface-container-lowest" href="#">
+<span class="material-symbols-outlined icon-fill" data-icon="event_note">event_note</span>
+<span class="font-body-md text-body-md">Contribution Plans</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors cursor-pointer duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-body-md text-body-md">Payments</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors cursor-pointer duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-body-md text-body-md">Members</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors cursor-pointer duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-body-md text-body-md">Reconciliation</span>
+</a>
+</li>
+</ul>
+<div class="mt-auto px-sm pt-lg border-t border-outline-variant flex items-center gap-md">
+<img alt="User profile avatar" class="w-10 h-10 rounded-full border border-outline-variant object-cover" data-alt="A close-up, highly detailed portrait of a professional corporate administrator in a modern office setting. The lighting is bright and even, characteristic of a light-mode interface. The subject exudes confidence and reliability, fitting for a financial management context. Subtle, cool-toned background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuClWCRjC8GnJCN3qdaYcxjT3tnEbN6p9K1TAibz-3SP3IDU7_hFC4Jwlwoy8mE5F21f5xN8CoAInsvdXizKB2pQTFfSemzGjDggrYbGShZw5l8MV1-5MYh6Rr_UtgJnrTUzPLtfp0FYmCgyb25rTgtAVIE7tE87N-8m6hu-V2ubiFEPUHjc36l99dof6fls6_8RLOBLcCIElfYqFhp5DFeQgomCJwqrr7qB9z__6JNMxbkbmMZJuGq_vxcISkAwfxmPOOSC2FfccA"/>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md font-medium text-on-surface">Admin User</span>
+<span class="font-label-caps text-label-caps text-secondary">Settings</span>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 ml-0 md:ml-64 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center h-16 px-margin-desktop w-full md:w-full bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline sticky top-0 z-10 transition-all duration-200">
+<div class="flex items-center bg-surface-container-lowest border border-outline-variant rounded-full px-md py-sm w-96 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-surface">
+<span class="material-symbols-outlined text-secondary mr-sm" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md font-body-md text-on-surface w-full p-0 placeholder-secondary" placeholder="Search plans..." type="text"/>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-sm rounded-full text-secondary hover:bg-surface-container-low transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-sm rounded-full text-secondary hover:bg-surface-container-low transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-margin-mobile md:p-margin-desktop flex-1 flex flex-col gap-xl max-w-[1600px] w-full mx-auto">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-xs hidden md:block">Contribution Plans</h2>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-xs block md:hidden">Contribution Plans</h2>
+<p class="font-body-md text-body-md text-secondary">Manage and monitor all active and upcoming financial contribution cycles.</p>
+</div>
+<button class="bg-primary text-on-primary font-body-md text-body-md font-medium py-sm px-lg rounded-full hover:bg-on-surface-variant transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                    Create New Plan
+                </button>
+</div>
+<!-- Data Table Section -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden flex flex-col">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-surface-container-highest">
+<th class="font-label-caps text-label-caps text-secondary py-md px-gutter font-medium tracking-wider uppercase">Plan Name</th>
+<th class="font-label-caps text-label-caps text-secondary py-md px-gutter font-medium tracking-wider uppercase">Contribution</th>
+<th class="font-label-caps text-label-caps text-secondary py-md px-gutter font-medium tracking-wider uppercase">Cycle</th>
+<th class="font-label-caps text-label-caps text-secondary py-md px-gutter font-medium tracking-wider uppercase">Members</th>
+<th class="font-label-caps text-label-caps text-secondary py-md px-gutter font-medium tracking-wider uppercase text-right">Total Expected</th>
+<th class="font-label-caps text-label-caps text-secondary py-md px-gutter font-medium tracking-wider uppercase text-right">Total Received</th>
+<th class="font-label-caps text-label-caps text-secondary py-md px-gutter font-medium tracking-wider uppercase text-right">Profit/Cycle</th>
+<th class="font-label-caps text-label-caps text-secondary py-md px-gutter font-medium tracking-wider uppercase text-center">Status</th>
+<th class="py-md px-gutter"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
+<td class="py-sm px-gutter">
+<div class="font-body-md text-body-md font-medium text-on-surface">Alpha Growth Q3</div>
+<div class="font-body-md text-body-md text-secondary text-[12px]">ID: PLN-8823</div>
+</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-on-surface">$5,000.00</td>
+<td class="py-sm px-gutter font-body-md text-body-md text-on-surface">Monthly</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-on-surface">24</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-on-surface text-right">$120,000.00</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-on-surface text-right">$115,000.00</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-[#059669] text-right">+$8,400.00</td>
+<td class="py-sm px-gutter text-center">
+<span class="inline-flex items-center px-sm py-[2px] rounded-full text-label-caps font-label-caps bg-[#ecfdf5] text-[#059669] border border-[#a7f3d0]">
+                                        Active
+                                    </span>
+</td>
+<td class="py-sm px-gutter text-right opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-secondary hover:text-primary p-[4px] rounded hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="more_horiz">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
+<td class="py-sm px-gutter">
+<div class="font-body-md text-body-md font-medium text-on-surface">Omega Reserve</div>
+<div class="font-body-md text-body-md text-secondary text-[12px]">ID: PLN-9104</div>
+</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-on-surface">$2,500.00</td>
+<td class="py-sm px-gutter font-body-md text-body-md text-on-surface">Bi-Weekly</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-on-surface">45</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-on-surface text-right">$112,500.00</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-on-surface text-right">$112,500.00</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-[#059669] text-right">+$5,100.00</td>
+<td class="py-sm px-gutter text-center">
+<span class="inline-flex items-center px-sm py-[2px] rounded-full text-label-caps font-label-caps bg-[#ecfdf5] text-[#059669] border border-[#a7f3d0]">
+                                        Active
+                                    </span>
+</td>
+<td class="py-sm px-gutter text-right opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-secondary hover:text-primary p-[4px] rounded hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="more_horiz">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
+<td class="py-sm px-gutter">
+<div class="font-body-md text-body-md font-medium text-on-surface">Sigma Foundation</div>
+<div class="font-body-md text-body-md text-secondary text-[12px]">ID: PLN-7442</div>
+</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-on-surface">$10,000.00</td>
+<td class="py-sm px-gutter font-body-md text-body-md text-on-surface">Quarterly</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-on-surface">12</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-on-surface text-right">$120,000.00</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-error text-right">$90,000.00</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-[#059669] text-right">+$12,000.00</td>
+<td class="py-sm px-gutter text-center">
+<span class="inline-flex items-center px-sm py-[2px] rounded-full text-label-caps font-label-caps bg-[#fffbeb] text-[#d97706] border border-[#fde68a]">
+                                        Pending
+                                    </span>
+</td>
+<td class="py-sm px-gutter text-right opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-secondary hover:text-primary p-[4px] rounded hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="more_horiz">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer bg-surface-container-lowest">
+<td class="py-sm px-gutter">
+<div class="font-body-md text-body-md font-medium text-secondary">Delta Heritage</div>
+<div class="font-body-md text-body-md text-secondary text-[12px] opacity-70">ID: PLN-6119</div>
+</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-secondary">$1,000.00</td>
+<td class="py-sm px-gutter font-body-md text-body-md text-secondary">Monthly</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-secondary">100</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-secondary text-right">$100,000.00</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-secondary text-right">$100,000.00</td>
+<td class="py-sm px-gutter font-numeric-data text-numeric-data text-secondary text-right">+$4,200.00</td>
+<td class="py-sm px-gutter text-center">
+<span class="inline-flex items-center px-sm py-[2px] rounded-full text-label-caps font-label-caps bg-surface-container-high text-secondary border border-outline-variant">
+                                        Completed
+                                    </span>
+</td>
+<td class="py-sm px-gutter text-right opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-secondary hover:text-primary p-[4px] rounded hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="more_horiz">more_horiz</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="border-t border-outline-variant p-md flex items-center justify-between bg-surface-container-lowest">
+<span class="font-body-md text-body-md text-secondary">Showing 1 to 4 of 24 plans</span>
+<div class="flex items-center gap-xs">
+<button class="p-xs text-secondary hover:text-primary border border-transparent hover:border-outline-variant rounded transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary text-on-primary font-body-md text-body-md">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container-low text-on-surface font-body-md text-body-md transition-colors">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container-low text-on-surface font-body-md text-body-md transition-colors">3</button>
+<button class="p-xs text-secondary hover:text-primary border border-transparent hover:border-outline-variant rounded transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
