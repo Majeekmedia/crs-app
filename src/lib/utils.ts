@@ -50,4 +50,16 @@ export const cycleLabels: Record<string, string> = {
   'bi-weekly': 'Bi-Weekly',
   monthly: 'Monthly',
   quarterly: 'Quarterly',
+  custom: 'Custom',
 };
+
+// Format cycle duration for display (handles custom day counts)
+export function formatCycleDuration(plan: {
+  cycle_duration: string;
+  cycle_days?: number | null;
+}): string {
+  if (plan.cycle_duration === 'custom' && plan.cycle_days) {
+    return `Every ${plan.cycle_days} day${plan.cycle_days > 1 ? 's' : ''}`;
+  }
+  return cycleLabels[plan.cycle_duration] || plan.cycle_duration;
+}

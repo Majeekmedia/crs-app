@@ -1,9 +1,11 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useMobileMenu } from '@/lib/mobile-menu-context';
 import { signOut } from '@/lib/server-actions';
+import { createBrowserClient } from '@supabase/ssr';
 
 const navItems = [
   { href: '/', label: 'Dashboard', icon: 'dashboard' },
@@ -16,6 +18,24 @@ const navItems = [
 export default function Sidebar() {
   const pathname = usePathname();
   const { isOpen, close } = useMobileMenu();
+  const [userName, setUserName] = useState('User');
+  const [userInitial, setUserInitial] = useState('U');
+
+  useEffect(() => {
+    async function loadUser() {
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
+        setUserName(name);
+        setUserInitial(name.charAt(0).toUpperCase());
+      }
+    }
+    loadUser();
+  }, []);
 
   return (
     <>
@@ -94,10 +114,10 @@ export default function Sidebar() {
           <div className="flex items-center justify-between gap-md px-sm">
             <div className="flex items-center gap-md">
               <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold">
-                A
+                {userInitial}
               </div>
               <div>
-                <p className="text-body-md font-medium text-on-surface">Admin User</p>
+                <p className="text-body-md font-medium text-on-surface">{userName}</p>
                 <p className="text-label-caps text-secondary">System Admin</p>
               </div>
             </div>

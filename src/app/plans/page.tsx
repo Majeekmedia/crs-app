@@ -1,5 +1,5 @@
 import { createServerSupabase } from '@/lib/supabase';
-import { formatCurrency, cycleLabels } from '@/lib/utils';
+import { formatCurrency, formatCycleDuration } from '@/lib/utils';
 import Link from 'next/link';
 import { deletePlan } from '@/lib/server-actions';
 
@@ -82,7 +82,7 @@ export default async function PlansPage() {
                         {formatCurrency(plan.contribution_amount)}
                       </td>
                       <td className="py-sm px-gutter text-body-md text-on-surface">
-                        {cycleLabels[plan.cycle_duration] || plan.cycle_duration}
+                        {formatCycleDuration(plan)}
                       </td>
                       <td className="py-sm px-gutter text-numeric-data text-on-surface">{memberCount}</td>
                       <td className="py-sm px-gutter text-numeric-data text-on-surface text-right">

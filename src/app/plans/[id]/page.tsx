@@ -1,5 +1,5 @@
 import { createServerSupabase } from '@/lib/supabase';
-import { formatCurrency, formatDate, getInitials, cycleLabels } from '@/lib/utils';
+import { formatCurrency, formatDate, formatCycleDuration, getInitials } from '@/lib/utils';
 import { assignMemberToPlan, removeMemberFromPlan, processPayout, deletePlan, startNextCycle } from '@/lib/server-actions';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -106,6 +106,15 @@ export default async function PlanDetailPage({
             {plan.status === 'active' ? 'Active Plan' : plan.status.charAt(0).toUpperCase() + plan.status.slice(1)}
           </span>
           <h2 className="font-headline-lg text-headline-lg text-on-surface">{plan.name}</h2>
+          <div className="flex items-center gap-md mt-xs">
+            <span className="text-body-md text-secondary">{formatCycleDuration(plan)}</span>
+            {plan.start_date && (
+              <>
+                <span className="text-secondary">·</span>
+                <span className="text-body-md text-secondary">Starts {formatDate(plan.start_date)}</span>
+              </>
+            )}
+          </div>
         </div>
         <div className="flex gap-sm">
           <Link

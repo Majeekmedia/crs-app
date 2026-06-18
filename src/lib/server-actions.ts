@@ -12,7 +12,7 @@ export async function signUp(formData: FormData) {
   const password = formData.get('password') as string;
   const name = formData.get('name') as string;
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: { data: { full_name: name } },
@@ -20,7 +20,14 @@ export async function signUp(formData: FormData) {
   if (error) throw new Error(error.message);
 
   revalidatePath('/', 'layout');
-  redirect('/auth/login?registered=true');
+
+  // If a session was created immediately (email confirmation disabled),
+  // go straight to dashboard instead of login page
+  if (data.session) {
+    redirect('/');
+  } else {
+    redirect('/auth/login?registered=true');
+  }
 }
 
 export async function signIn(formData: FormData) {
@@ -54,6 +61,10 @@ export async function createPlan(formData: FormData) {
   const name = formData.get('name') as string;
   const contributionAmount = parseFloat(formData.get('contribution_amount') as string);
   const cycleDuration = formData.get('cycle_duration') as string;
+  const cycleDaysStr = formData.get('cycle_days') as string;
+  const cycleDays = cycleDaysStr ? parseInt(cycleDaysStr, 10) : null;
+  const startDateStr = formData.get('start_date') as string;
+  const startDate = startDateStr ? new Date(startDateStr).toISOString() : null;
   const payoutAmount = parseFloat(formData.get('payout_amount') as string);
   const totalSlots = parseInt(formData.get('total_slots') as string, 10);
 
@@ -61,6 +72,8 @@ export async function createPlan(formData: FormData) {
     name,
     contribution_amount: contributionAmount,
     cycle_duration: cycleDuration,
+    cycle_days: cycleDays,
+    start_date: startDate,
     payout_amount: payoutAmount,
     total_slots: totalSlots,
     user_id: user.id,
