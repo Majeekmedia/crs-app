@@ -32,7 +32,7 @@ export default function SearchInput({
 
   return (
     <div className="relative flex-1 max-w-xs">
-      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary">
+      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">
         <span className="material-symbols-outlined text-[18px]">search</span>
       </span>
       <input
@@ -45,7 +45,7 @@ export default function SearchInput({
       {value && (
         <button
           onClick={() => setValue('')}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-on-surface transition-colors"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors"
           aria-label="Clear search"
         >
           <span className="material-symbols-outlined text-[16px]">close</span>

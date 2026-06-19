@@ -43,7 +43,7 @@ export default function PlansListClient({ plans }: { plans: Plan[] }) {
       {/* Search Bar */}
       <div className="mb-md">
         <div className="relative max-w-xs">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary pointer-events-none">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">
             <span className="material-symbols-outlined text-[18px]">search</span>
           </span>
           <input
@@ -56,7 +56,7 @@ export default function PlansListClient({ plans }: { plans: Plan[] }) {
           {search && (
             <button
               onClick={() => handleSearch('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-on-surface transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors"
               aria-label="Clear search"
             >
               <span className="material-symbols-outlined text-[16px]">close</span>
@@ -70,20 +70,20 @@ export default function PlansListClient({ plans }: { plans: Plan[] }) {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-surface-container-highest">
-              <th className="font-label-caps text-label-caps text-secondary py-md px-gutter uppercase">Plan Name</th>
-              <th className="font-label-caps text-label-caps text-secondary py-md px-gutter uppercase">Contribution</th>
-              <th className="font-label-caps text-label-caps text-secondary py-md px-gutter uppercase">Cycle</th>
-              <th className="font-label-caps text-label-caps text-secondary py-md px-gutter uppercase">Members</th>
-              <th className="font-label-caps text-label-caps text-secondary py-md px-gutter uppercase text-right">Total Expected</th>
-              <th className="font-label-caps text-label-caps text-secondary py-md px-gutter uppercase text-right">Payout/Cycle</th>
-              <th className="font-label-caps text-label-caps text-secondary py-md px-gutter uppercase text-center">Status</th>
+              <th className="font-label-caps text-label-caps text-on-surface-variant py-md px-gutter uppercase">Plan Name</th>
+              <th className="font-label-caps text-label-caps text-on-surface-variant py-md px-gutter uppercase">Contribution</th>
+              <th className="font-label-caps text-label-caps text-on-surface-variant py-md px-gutter uppercase">Cycle</th>
+              <th className="font-label-caps text-label-caps text-on-surface-variant py-md px-gutter uppercase">Members</th>
+              <th className="font-label-caps text-label-caps text-on-surface-variant py-md px-gutter uppercase text-right">Total Expected</th>
+              <th className="font-label-caps text-label-caps text-on-surface-variant py-md px-gutter uppercase text-right">Payout/Cycle</th>
+              <th className="font-label-caps text-label-caps text-on-surface-variant py-md px-gutter uppercase text-center">Status</th>
               <th className="py-md px-gutter"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-surface-container-low">
             {paginatedPlans.length === 0 ? (
               <tr>
-                <td colSpan={8} className="py-xl text-center text-secondary text-body-md">
+                <td colSpan={8} className="py-xl text-center text-on-surface-variant text-body-md">
                   {search ? 'No plans match your search.' : 'No plans created yet. '}
                   {!search && <Link href="/plans/new" className="text-primary underline">Create your first plan</Link>}
                 </td>
@@ -97,7 +97,7 @@ export default function PlansListClient({ plans }: { plans: Plan[] }) {
                     ? 'bg-[#ecfdf5] text-[#059669] border-[#a7f3d0]'
                     : plan.status === 'paused'
                     ? 'bg-[#fffbeb] text-[#d97706] border-[#fde68a]'
-                    : 'bg-surface-container-high text-secondary border-outline-variant';
+                    : 'bg-surface-container-high text-on-surface-variant border-outline-variant';
 
                 return (
                   <tr key={plan.id} className="hover:bg-surface-container-low transition-colors group cursor-pointer">
@@ -128,8 +128,7 @@ export default function PlansListClient({ plans }: { plans: Plan[] }) {
                       <div className="flex items-center justify-end gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
                         <Link
                           href={`/plans/${plan.id}`}
-                          className="text-secondary hover:text-primary p-[4px] rounded hover:bg-surface-variant transition-colors"
-                        >
+                          className="text-on-surface-variant hover:text-primary p-[4px] rounded hover:bg-surface-variant transition-colors">
                           <span className="material-symbols-outlined text-[18px]">visibility</span>
                         </Link>
                         <ConfirmDeleteButton planId={plan.id} iconOnly />
@@ -146,7 +145,7 @@ export default function PlansListClient({ plans }: { plans: Plan[] }) {
       {/* Mobile Cards */}
       <div className="md:hidden space-y-sm">
         {paginatedPlans.length === 0 ? (
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg text-center text-secondary text-body-md">
+          <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg text-center text-on-surface-variant text-body-md">
             {search ? 'No plans match your search.' : 'No plans created yet. '}
             {!search && <Link href="/plans/new" className="text-primary underline">Create your first plan</Link>}
           </div>
@@ -157,9 +156,9 @@ export default function PlansListClient({ plans }: { plans: Plan[] }) {
             const statusColors: Record<string, string> = {
               active: 'text-[#059669] bg-[#ecfdf5]',
               paused: 'text-[#d97706] bg-[#fffbeb]',
-              completed: 'text-secondary bg-surface-container-high',
+              completed: 'text-on-surface-variant bg-surface-container-high',
             };
-            const statusClass = statusColors[plan.status] || 'text-secondary bg-surface-container-high';
+            const statusClass = statusColors[plan.status] || 'text-on-surface-variant bg-surface-container-high';
 
             return (
               <div

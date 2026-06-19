@@ -25,20 +25,20 @@ const config: Config = {
         secondary: "#fca311",
         "on-secondary": "#000000",
         "secondary-container": "#fef3d5",
-        "on-secondary-container": "#1b1b1b",
+        "on-secondary-container": "#000000",
         "secondary-fixed": "#fef3d5",
         "secondary-fixed-dim": "#fde095",
-        "on-secondary-fixed": "#1b1b1b",
+        "on-secondary-fixed": "#000000",
         "on-secondary-fixed-variant": "#5c3c00",
 
         // Tertiary - Rich Red accent
         tertiary: "#d62828",
         "on-tertiary": "#ffffff",
         "tertiary-container": "#fcd6d6",
-        "on-tertiary-container": "#1b1b1b",
+        "on-tertiary-container": "#000000",
         "tertiary-fixed": "#fcd6d6",
         "tertiary-fixed-dim": "#f8a8a8",
-        "on-tertiary-fixed": "#1b1b1b",
+        "on-tertiary-fixed": "#000000",
         "on-tertiary-fixed-variant": "#8c1515",
 
         // Error

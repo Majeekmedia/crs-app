@@ -36,7 +36,7 @@ export default function MembersListClient({ members }: { members: Member[] }) {
       {/* Search Bar */}
       <div className="mb-md">
         <div className="relative max-w-xs">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary pointer-events-none">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">
             <span className="material-symbols-outlined text-[18px]">search</span>
           </span>
           <input
@@ -49,7 +49,7 @@ export default function MembersListClient({ members }: { members: Member[] }) {
           {search && (
             <button
               onClick={() => handleSearch('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-on-surface transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors"
               aria-label="Clear search"
             >
               <span className="material-symbols-outlined text-[16px]">close</span>
@@ -61,7 +61,7 @@ export default function MembersListClient({ members }: { members: Member[] }) {
       {/* Desktop Members Table */}
       <div className="hidden md:block bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden">
         <table className="w-full text-left border-collapse">
-          <thead className="bg-surface text-label-caps text-secondary border-b border-surface-container-high">
+          <thead className="bg-surface text-label-caps text-on-surface-variant border-b border-surface-container-high">
             <tr>
               <th className="px-md py-sm font-semibold tracking-wider w-1/4">Member Info</th>
               <th className="px-md py-sm font-semibold tracking-wider">Phone Number</th>
@@ -73,7 +73,7 @@ export default function MembersListClient({ members }: { members: Member[] }) {
           <tbody className="divide-y divide-surface-container-high">
             {paginatedMembers.length === 0 ? (
               <tr>
-                <td colSpan={5} className="py-xl text-center text-secondary text-body-md">
+                <td colSpan={5} className="py-xl text-center text-on-surface-variant text-body-md">
                   {search ? 'No members match your search.' : 'No members yet. '}
                   {!search && <Link href="/members/new" className="text-primary underline">Add your first member</Link>}
                 </td>
@@ -88,7 +88,7 @@ export default function MembersListClient({ members }: { members: Member[] }) {
                       </div>
                       <div>
                         <div className="text-body-md font-medium text-on-surface">{member.name}</div>
-                        <div className="text-label-caps text-secondary mt-0.5">ID: {member.id.slice(0, 8).toUpperCase()}</div>
+                        <div className="text-label-caps text-on-surface-variant mt-0.5">ID: {member.id.slice(0, 8).toUpperCase()}</div>
                       </div>
                     </div>
                   </td>
@@ -100,7 +100,7 @@ export default function MembersListClient({ members }: { members: Member[] }) {
                           href={`https://wa.me/${member.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Dear ${member.name}, this is a reminder about your contribution. Please make your payment at your earliest convenience. Thank you.`)}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-secondary hover:text-primary p-0.5 rounded hover:bg-surface-variant transition-colors"
+                          className="text-on-surface-variant hover:text-primary p-0.5 rounded hover:bg-surface-variant transition-colors"
                           title="Send WhatsApp reminder"
                         >
                           <span className="material-symbols-outlined text-[16px]">chat</span>
@@ -121,7 +121,7 @@ export default function MembersListClient({ members }: { members: Member[] }) {
                       <form action={deleteMember.bind(null, member.id)}>
                         <button
                           type="submit"
-                          className="text-secondary hover:text-error p-1 rounded hover:bg-surface-variant transition-colors"
+                          className="text-on-surface-variant hover:text-error p-1 rounded hover:bg-surface-variant transition-colors"
                         >
                           <span className="material-symbols-outlined text-[18px]">delete</span>
                         </button>
@@ -138,7 +138,7 @@ export default function MembersListClient({ members }: { members: Member[] }) {
       {/* Mobile Member Cards */}
       <div className="md:hidden space-y-sm">
         {paginatedMembers.length === 0 ? (
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-lg text-center text-secondary text-body-md">
+          <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-lg text-center text-on-surface-variant text-body-md">
             {search ? 'No members match your search.' : 'No members yet. '}
             {!search && <Link href="/members/new" className="text-primary underline">Add your first member</Link>}
           </div>
@@ -152,18 +152,18 @@ export default function MembersListClient({ members }: { members: Member[] }) {
                   </div>
                   <div>
                     <div className="text-body-md font-medium text-on-surface">{member.name}</div>
-                    <div className="text-label-sm text-secondary">ID: {member.id.slice(0, 8).toUpperCase()}</div>
+                    <div className="text-label-sm text-on-surface-variant">ID: {member.id.slice(0, 8).toUpperCase()}</div>
                   </div>
                 </div>
                 <form action={deleteMember.bind(null, member.id)}>
-                  <button type="submit" className="text-secondary hover:text-error p-1 rounded hover:bg-surface-variant transition-colors">
+                  <button type="submit" className="text-on-surface-variant hover:text-error p-1 rounded hover:bg-surface-variant transition-colors">
                     <span className="material-symbols-outlined text-[18px]">delete</span>
                   </button>
                 </form>
               </div>
               <div className="grid grid-cols-2 gap-x-md gap-y-1 pt-sm border-t border-surface-variant">
                 <div className="flex justify-between">
-                  <span className="text-label-sm text-secondary">Phone</span>
+                  <span className="text-label-sm text-on-surface-variant">Phone</span>
                   <span className="text-label-sm text-on-surface font-medium">
                     {member.phone ? (
                       <span className="inline-flex items-center gap-1">
@@ -172,7 +172,7 @@ export default function MembersListClient({ members }: { members: Member[] }) {
                           href={`https://wa.me/${member.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Dear ${member.name}, this is a reminder about your contribution. Please make your payment at your earliest convenience. Thank you.`)}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-secondary hover:text-primary"
+                          className="text-on-surface-variant hover:text-primary"
                           title="Send WhatsApp reminder"
                         >
                           <span className="material-symbols-outlined text-[14px]">chat</span>
@@ -182,13 +182,13 @@ export default function MembersListClient({ members }: { members: Member[] }) {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-label-sm text-secondary">Active Plans</span>
+                  <span className="text-label-sm text-on-surface-variant">Active Plans</span>
                   <span className="inline-flex items-center justify-center bg-surface-variant text-on-surface-variant text-numeric-data rounded-full px-2 py-0.5 text-[12px] font-medium">
                     {member.activePlans}
                   </span>
                 </div>
                 <div className="flex justify-between col-span-2 pt-xs border-t border-surface-variant mt-xs">
-                  <span className="text-label-sm text-secondary">Total Contributed</span>
+                  <span className="text-label-sm text-on-surface-variant">Total Contributed</span>
                   <span className="text-label-sm text-on-surface font-medium">{formatCurrency(member.totalContributed)}</span>
                 </div>
               </div>
