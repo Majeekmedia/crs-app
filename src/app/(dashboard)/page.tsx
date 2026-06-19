@@ -36,11 +36,14 @@ async function getDashboardData() {
 
   const totalOutstanding = totalExpected - totalAllocated;
 
-  // Profit estimate: (payout_amount - contribution_amount * total_slots) for active plans
+  // Profit estimate: (contribution_amount * total_slots - payout_amount) × total_slots (cycles)
+  // Per cycle: members contribute ₦X each, winner gets payout, excess is profit
+  // Total profit = per-cycle profit × number of cycles
   const profitEstimate = activePlans.reduce((sum, p) => {
-    const totalContributions = p.total_slots * parseFloat(String(p.contribution_amount));
-    const planProfit = parseFloat(String(p.payout_amount)) - totalContributions;
-    return sum + Math.max(0, planProfit);
+    const perCycleCollection = p.total_slots * parseFloat(String(p.contribution_amount));
+    const profitPerCycle = perCycleCollection - parseFloat(String(p.payout_amount));
+    const totalProfit = profitPerCycle * p.total_slots; // profit over all cycles
+    return sum + Math.max(0, totalProfit);
   }, 0);
 
   return {
@@ -123,7 +126,7 @@ export default async function DashboardPage() {
               {formatCurrency(data.profitEstimate)}
             </div>
             <div className="mt-sm text-body-md text-primary-fixed-dim flex items-center gap-xs">
-              <span>Projected per cycle</span>
+              <span>Projected total across all cycles</span>
             </div>
           </div>
         </div>
@@ -143,8 +146,8 @@ export default async function DashboardPage() {
         </div>
 
         <div>
-          {/* Table Header */}
-          <div className="grid grid-cols-12 gap-gutter px-lg py-sm border-b border-outline-variant bg-surface font-label-caps text-label-caps text-secondary uppercase">
+          {/* Table Header - hidden on mobile */}
+          <div className="hidden md:grid grid-cols-12 gap-gutter px-lg py-sm border-b border-outline-variant bg-surface font-label-caps text-label-caps text-secondary uppercase">
             <div className="col-span-4">Plan Name</div>
             <div className="col-span-3">Collected vs Expected</div>
             <div className="col-span-3">Cycle</div>
@@ -166,27 +169,52 @@ export default async function DashboardPage() {
                 <Link
                   key={plan.id}
                   href={`/plans/${plan.id}`}
-                  className="grid grid-cols-12 gap-gutter px-lg py-md border-b border-outline-variant items-center hover:bg-surface-container-low transition-colors"
+                  className="block md:grid grid-cols-12 gap-gutter px-lg py-md border-b border-outline-variant items-center hover:bg-surface-container-low transition-colors"
                 >
-                  <div className="col-span-4">
-                    <div className="text-body-md font-medium text-on-surface mb-xs">{plan.name}</div>
+                  {/* Mobile: stacked card layout */}
+                  <div className="md:hidden space-y-sm">
+                    <div className="text-body-md font-medium text-on-surface">{plan.name}</div>
                     <div className="w-full bg-surface-container-high rounded-full h-2">
                       <div
                         className="bg-primary h-2 rounded-full"
                         style={{ width: `${progressPct}%` }}
                       ></div>
                     </div>
+                    <div className="flex items-center justify-between text-body-md">
+                      <span className="text-numeric-data text-secondary">
+                        <span className="text-on-surface">{formatCurrency(received)}</span> / {formatCurrency(expected)}
+                      </span>
+                      <span className="text-on-surface">{cycleLabels[plan.cycle_duration] || plan.cycle_duration}</span>
+                    </div>
+                    <div className="flex justify-end">
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-label-caps bg-[#D1FAE5] text-[#065F46]">
+                        Active
+                      </span>
+                    </div>
                   </div>
-                  <div className="col-span-3 text-numeric-data text-secondary">
-                    <span className="text-on-surface">{formatCurrency(received)}</span> / {formatCurrency(expected)}
-                  </div>
-                  <div className="col-span-3 text-body-md text-on-surface">
-                    {cycleLabels[plan.cycle_duration] || plan.cycle_duration}
-                  </div>
-                  <div className="col-span-2 text-right">
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-label-caps bg-[#D1FAE5] text-[#065F46]">
-                      Active
-                    </span>
+
+                  {/* Desktop: grid columns */}
+                  <div className="hidden md:contents">
+                    <div className="col-span-4">
+                      <div className="text-body-md font-medium text-on-surface mb-xs">{plan.name}</div>
+                      <div className="w-full bg-surface-container-high rounded-full h-2">
+                        <div
+                          className="bg-primary h-2 rounded-full"
+                          style={{ width: `${progressPct}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    <div className="col-span-3 text-numeric-data text-secondary">
+                      <span className="text-on-surface">{formatCurrency(received)}</span> / {formatCurrency(expected)}
+                    </div>
+                    <div className="col-span-3 text-body-md text-on-surface">
+                      {cycleLabels[plan.cycle_duration] || plan.cycle_duration}
+                    </div>
+                    <div className="col-span-2 text-right">
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-label-caps bg-[#D1FAE5] text-[#065F46]">
+                        Active
+                      </span>
+                    </div>
                   </div>
                 </Link>
               );
