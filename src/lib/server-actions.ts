@@ -61,27 +61,29 @@ export async function createPlan(formData: FormData) {
   const name = formData.get('name') as string;
   const contributionAmount = parseFloat(formData.get('contribution_amount') as string);
   const cycleDuration = formData.get('cycle_duration') as string;
-  const cycleDaysStr = formData.get('cycle_days') as string;
-  const cycleDays = cycleDaysStr ? parseInt(cycleDaysStr, 10) : null;
-  const startDateStr = formData.get('start_date') as string;
-  const startDate = startDateStr ? new Date(startDateStr).toISOString() : null;
   const payoutAmount = parseFloat(formData.get('payout_amount') as string);
   const totalSlots = parseInt(formData.get('total_slots') as string, 10);
+  const startDateStr = formData.get('start_date') as string;
+  const cycleDaysStr = formData.get('cycle_days') as string;
+
+  if (!startDateStr) throw new Error('Start date is required');
+
+  const cycleDays = cycleDaysStr ? parseInt(cycleDaysStr, 10) : null;
 
   const { error } = await supabase.from('plans').insert({
     name,
     contribution_amount: contributionAmount,
     cycle_duration: cycleDuration,
     cycle_days: cycleDays,
-    start_date: startDate,
     payout_amount: payoutAmount,
     total_slots: totalSlots,
+    start_date: new Date(startDateStr).toISOString(),
     user_id: user.id,
   });
 
   if (error) throw new Error(error.message);
   revalidatePath('/plans');
-  redirect('/plans');
+  redirect('/plans?success=Plan+created+successfully');
 }
 
 export async function updatePlan(formData: FormData) {
@@ -93,23 +95,50 @@ export async function updatePlan(formData: FormData) {
   const payoutAmount = parseFloat(formData.get('payout_amount') as string);
   const totalSlots = parseInt(formData.get('total_slots') as string, 10);
   const status = formData.get('status') as string;
+  const cycleDaysStr = formData.get('cycle_days') as string;
+  const startDateStr = formData.get('start_date') as string;
+
+  const updateData: Record<string, unknown> = {
+    name,
+    contribution_amount: contributionAmount,
+    cycle_duration: cycleDuration,
+    payout_amount: payoutAmount,
+    total_slots: totalSlots,
+    status,
+  };
+
+  if (cycleDaysStr) {
+    const cycleDays = parseInt(cycleDaysStr, 10);
+    if (!isNaN(cycleDays)) updateData.cycle_days = cycleDays;
+  }
+
+  if (startDateStr) {
+    // Check if start_date can be changed (not locked)
+    const { data: existing } = await supabase
+      .from('plans')
+      .select('start_date, cycle_days')
+      .eq('id', id)
+      .single();
+
+    if (existing?.start_date && existing?.cycle_days) {
+      const { isStartDateLocked } = await import('@/lib/utils');
+      if (isStartDateLocked(existing.start_date, existing.cycle_days)) {
+        throw new Error('Cannot change start date after the plan has started');
+      }
+    }
+
+    updateData.start_date = new Date(startDateStr).toISOString();
+  }
 
   const { error } = await supabase
     .from('plans')
-    .update({
-      name,
-      contribution_amount: contributionAmount,
-      cycle_duration: cycleDuration,
-      payout_amount: payoutAmount,
-      total_slots: totalSlots,
-      status,
-    })
+    .update(updateData)
     .eq('id', id);
 
   if (error) throw new Error(error.message);
   revalidatePath('/plans');
   revalidatePath(`/plans/${id}`);
-  redirect('/plans');
+  redirect('/plans?success=Plan+updated+successfully');
 }
 
 export async function deletePlan(id: string) {
@@ -133,7 +162,7 @@ export async function createMember(formData: FormData) {
   const { error } = await supabase.from('members').insert({ name, phone, user_id: user.id });
   if (error) throw new Error(error.message);
   revalidatePath('/members');
-  redirect('/members');
+  redirect('/members?success=Member+created+successfully');
 }
 
 export async function updateMember(formData: FormData) {
@@ -145,7 +174,7 @@ export async function updateMember(formData: FormData) {
   const { error } = await supabase.from('members').update({ name, phone }).eq('id', id);
   if (error) throw new Error(error.message);
   revalidatePath('/members');
-  redirect('/members');
+  redirect('/members?success=Member+updated+successfully');
 }
 
 export async function deleteMember(id: string) {
@@ -202,7 +231,7 @@ export async function recordPayment(formData: FormData) {
   if (error) throw new Error(error.message);
   revalidatePath('/payments');
   revalidatePath('/');
-  redirect(`/payments`);
+  redirect(`/payments?success=Payment+recorded`);
 }
 
 export async function deletePayment(id: string) {
@@ -241,28 +270,6 @@ export async function completePayout(payoutId: string, planId: string) {
     .from('payouts')
     .update({ status: 'completed', paid_at: new Date().toISOString() })
     .eq('id', payoutId);
-
-  if (error) throw new Error(error.message);
-  revalidatePath(`/plans/${planId}`);
-}
-
-export async function startNextCycle(planId: string) {
-  const supabase = await createServerSupabase();
-
-  const { data: plan } = await supabase
-    .from('plans')
-    .select('current_cycle')
-    .eq('id', planId)
-    .single();
-
-  if (!plan) throw new Error('Plan not found');
-
-  const nextCycle = (plan.current_cycle || 1) + 1;
-
-  const { error } = await supabase
-    .from('plans')
-    .update({ current_cycle: nextCycle })
-    .eq('id', planId);
 
   if (error) throw new Error(error.message);
   revalidatePath(`/plans/${planId}`);

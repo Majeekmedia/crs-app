@@ -3,6 +3,9 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import DashboardShell from '@/components/layout/DashboardShell';
 import { MobileMenuProvider } from '@/lib/mobile-menu-context';
+import { Suspense } from 'react';
+import ToastNotification from '@/components/ui/ToastNotification';
+import PwaRegister from '@/components/PwaRegister';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -11,7 +14,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Precision Ledger - CRS',
+  title: "Nengi's Precision Ledger - CRS",
   description: 'Contribution Reconciliation System',
 };
 
@@ -29,11 +32,21 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
           rel="stylesheet"
         />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#4F46E5" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Precision Ledger" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
       </head>
       <body className="bg-background text-on-background font-body-md antialiased min-h-screen">
         <MobileMenuProvider>
           <DashboardShell>{children}</DashboardShell>
         </MobileMenuProvider>
+        <Suspense fallback={null}>
+          <ToastNotification />
+        </Suspense>
+        <PwaRegister />
       </body>
     </html>
   );

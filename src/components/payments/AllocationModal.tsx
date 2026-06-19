@@ -3,11 +3,26 @@
 import { useState, useEffect, useCallback } from 'react';
 import { formatCurrency } from '@/lib/utils';
 
-interface PlanOption {
+interface CycleInfo {
+  cycle_number: number;
+  contribution: number;
+  paid: number;
+  outstanding: number;
+}
+
+interface PlanWithCycles {
   plan_id: string;
   plan_name: string;
   contribution_amount: number;
+  total_slots: number;
+  current_cycle: number;
   outstanding: number;
+  cycles: CycleInfo[];
+}
+
+interface MemberOutstandingResponse {
+  balance: number;
+  plans: PlanWithCycles[];
 }
 
 interface AllocationModalProps {
@@ -19,6 +34,11 @@ interface AllocationModalProps {
   onAllocated: () => void;
 }
 
+/** Build a unique key for a plan+cycle combination */
+function allocKey(planId: string, cycleNumber: number) {
+  return `${planId}::${cycleNumber}`;
+}
+
 export default function AllocationModal({
   paymentId,
   memberId,
@@ -27,7 +47,7 @@ export default function AllocationModal({
   onClose,
   onAllocated,
 }: AllocationModalProps) {
-  const [plans, setPlans] = useState<PlanOption[]>([]);
+  const [data, setData] = useState<MemberOutstandingResponse | null>(null);
   const [allocations, setAllocations] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -35,24 +55,29 @@ export default function AllocationModal({
 
   const totalAllocated = Object.values(allocations).reduce((sum, v) => sum + (v || 0), 0);
   const remaining = amount - totalAllocated;
+  const memberBalance = data?.balance ?? 0;
 
   useEffect(() => {
     async function fetchPlans() {
       try {
         const res = await fetch(`/api/member-outstanding?memberId=${memberId}`);
-        const data = await res.json();
-        setPlans(data);
+        const json: MemberOutstandingResponse = await res.json();
+        setData(json);
 
-        // Auto-suggest: allocate to oldest plan first
+        // Auto-suggest: fill cycles in order (current, next, etc.) across plans
         const suggested: Record<string, number> = {};
-        let remainingAmount = amount;
+        let remainingAmount = amount + (json.balance > 0 ? json.balance : 0); // include balance as available credit
 
-        for (const plan of data) {
+        for (const plan of json.plans) {
           if (remainingAmount <= 0) break;
-          const alloc = Math.min(remainingAmount, plan.outstanding);
-          if (alloc > 0) {
-            suggested[plan.plan_id] = alloc;
-            remainingAmount -= alloc;
+          for (const cycle of plan.cycles) {
+            if (remainingAmount <= 0) break;
+            if (cycle.outstanding <= 0) continue;
+            const alloc = Math.min(remainingAmount, cycle.outstanding);
+            if (alloc > 0) {
+              suggested[allocKey(plan.plan_id, cycle.cycle_number)] = alloc;
+              remainingAmount -= alloc;
+            }
           }
         }
         setAllocations(suggested);
@@ -66,8 +91,8 @@ export default function AllocationModal({
   }, [memberId, amount]);
 
   const handleAllocationChange = useCallback(
-    (planId: string, value: number) => {
-      setAllocations((prev) => ({ ...prev, [planId]: value }));
+    (key: string, value: number) => {
+      setAllocations((prev) => ({ ...prev, [key]: value }));
     },
     []
   );
@@ -77,15 +102,24 @@ export default function AllocationModal({
     setError(null);
 
     try {
-      // Save allocations via server action API
+      // Build allocation payload with cycle_number
+      const allocationPayload = Object.entries(allocations)
+        .filter(([, v]) => v > 0)
+        .map(([key, amountAllocated]) => {
+          const [planId, cycleStr] = key.split('::');
+          return {
+            plan_id: planId,
+            amount_allocated: amountAllocated,
+            cycle_number: parseInt(cycleStr, 10),
+          };
+        });
+
       const res = await fetch('/api/allocate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           paymentId,
-          allocations: Object.entries(allocations)
-            .filter(([, v]) => v > 0)
-            .map(([planId, amountAllocated]) => ({ plan_id: planId, amount_allocated: amountAllocated })),
+          allocations: allocationPayload,
         }),
       });
 
@@ -102,6 +136,8 @@ export default function AllocationModal({
     }
   }
 
+  const plans = data?.plans ?? [];
+
   return (
     <div className="fixed inset-0 z-50 bg-on-background/40 backdrop-blur-sm flex items-center justify-center p-4">
       <div
@@ -113,7 +149,7 @@ export default function AllocationModal({
         <div className="px-lg py-md border-b border-outline-variant flex justify-between items-center bg-surface-bright">
           <div>
             <h2 className="font-headline-md text-headline-md text-on-surface">Payment Allocation</h2>
-            <p className="text-body-md text-secondary mt-xs">Distribute incoming funds to active plans.</p>
+            <p className="text-body-md text-secondary mt-xs">Distribute incoming funds to plans and cycles.</p>
           </div>
           <button
             onClick={onClose}
@@ -145,6 +181,16 @@ export default function AllocationModal({
             </div>
           </div>
 
+          {/* Member Balance Badge */}
+          {memberBalance > 0 && (
+            <div className="mb-xl p-sm bg-tertiary-container/30 border border-tertiary-container rounded-lg flex items-center gap-sm">
+              <span className="material-symbols-outlined text-[20px] text-tertiary">account_balance_wallet</span>
+              <p className="text-body-md text-on-surface">
+                <span className="font-medium">Credit balance: {formatCurrency(memberBalance)}</span> — available for future allocations.
+              </p>
+            </div>
+          )}
+
           {error && (
             <div className="mb-md p-sm bg-error-container text-on-error-container rounded-lg text-body-md">
               {error}
@@ -161,63 +207,113 @@ export default function AllocationModal({
             <div>
               {/* Allocation Section */}
               <div className="flex justify-between items-end mb-md">
-                <h3 className="text-body-lg text-on-surface font-medium">Member&apos;s Active Plans</h3>
+                <h3 className="text-body-lg text-on-surface font-medium">Plans &amp; Cycles</h3>
                 <span className="text-numeric-data text-secondary">
                   Remaining: {formatCurrency(remaining)}
                 </span>
               </div>
 
-              <div className="space-y-md">
-                {plans.map((plan) => (
-                  <div key={plan.plan_id} className="border-b border-surface-variant pb-md">
-                    <div className="flex justify-between items-center mb-sm">
-                      <div>
-                        <p className="text-body-md text-on-surface font-medium">{plan.plan_name}</p>
-                        <p className="text-label-caps text-secondary mt-xs">
-                          Outstanding: {formatCurrency(plan.outstanding)}
-                        </p>
+              <div className="space-y-lg">
+                {plans.map((plan) => {
+                  const planTotalAllocated = plan.cycles
+                    .filter((c) => allocations[allocKey(plan.plan_id, c.cycle_number)] > 0)
+                    .reduce(
+                      (sum, c) => sum + (allocations[allocKey(plan.plan_id, c.cycle_number)] || 0),
+                      0
+                    );
+
+                  return (
+                    <div key={plan.plan_id} className="border border-outline-variant rounded-lg overflow-hidden">
+                      {/* Plan Header */}
+                      <div className="bg-surface-bright px-md py-sm flex justify-between items-center border-b border-outline-variant">
+                        <div>
+                          <p className="text-body-md text-on-surface font-medium">{plan.plan_name}</p>
+                          <p className="text-label-sm text-secondary mt-xs">
+                            Cycle {plan.current_cycle}/{plan.total_slots} &middot;{' '}
+                            {formatCurrency(plan.contribution_amount)} per cycle
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-numeric-data text-on-surface">
+                            {formatCurrency(planTotalAllocated)}
+                          </p>
+                          <p className="text-label-sm text-secondary mt-xs">
+                            of {formatCurrency(plan.outstanding)} outstanding
+                          </p>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-numeric-data text-on-surface">
-                          {formatCurrency(allocations[plan.plan_id] || 0)}
-                        </p>
-                        <p className="text-label-caps text-secondary mt-xs">
-                          {amount > 0
-                            ? `${Math.round(((allocations[plan.plan_id] || 0) / amount) * 100)}% of total`
-                            : '0% of total'}
-                        </p>
+
+                      {/* Cycle Rows */}
+                      <div className="divide-y divide-outline-variant/50">
+                        {plan.cycles.map((cycle) => {
+                          const key = allocKey(plan.plan_id, cycle.cycle_number);
+                          const allocValue = allocations[key] || 0;
+                          const isCurrentCycle = cycle.cycle_number === plan.current_cycle;
+
+                          return (
+                            <div
+                              key={key}
+                              className={`px-md py-sm ${isCurrentCycle ? 'bg-primary-container/10' : ''}`}
+                            >
+                              <div className="flex justify-between items-center mb-xs">
+                                <div className="flex items-center gap-sm">
+                                  {isCurrentCycle && (
+                                    <span className="text-[14px]" title="Current cycle">▶</span>
+                                  )}
+                                  <span className="text-body-md text-on-surface font-medium">
+                                    Cycle {cycle.cycle_number}
+                                  </span>
+                                  {cycle.paid > 0 && (
+                                    <span className="text-label-sm text-secondary">
+                                      ({formatCurrency(cycle.paid)} already paid)
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-md">
+                                  <span className="text-numeric-data text-on-surface text-body-md">
+                                    {formatCurrency(allocValue)}
+                                  </span>
+                                  <span className="text-label-sm text-secondary min-w-[60px] text-right">
+                                    / {formatCurrency(cycle.outstanding)}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="relative pt-xs">
+                                <input
+                                  type="range"
+                                  min="0"
+                                  max={Math.max(0, cycle.outstanding + allocValue)}
+                                  step="0.01"
+                                  value={allocValue}
+                                  onChange={(e) =>
+                                    handleAllocationChange(key, parseFloat(e.target.value) || 0)
+                                  }
+                                  className="w-full"
+                                  aria-label={`Allocate to ${plan.plan_name} Cycle ${cycle.cycle_number}`}
+                                />
+                              </div>
+                              {cycle.outstanding === 0 && cycle.paid > 0 && (
+                                <p className="text-label-sm text-tertiary mt-xs flex items-center gap-xs">
+                                  <span className="material-symbols-outlined text-[16px]">check_circle</span>
+                                  Fully paid
+                                </p>
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
-                    <div className="relative pt-xs">
-                      <input
-                        type="range"
-                        min="0"
-                        max={Math.min(plan.outstanding, amount)}
-                        step="0.01"
-                        value={allocations[plan.plan_id] || 0}
-                        onChange={(e) =>
-                          handleAllocationChange(plan.plan_id, parseFloat(e.target.value) || 0)
-                        }
-                        className="w-full"
-                        aria-label={`Allocate to ${plan.plan_name}`}
-                      />
-                      <div
-                        className="absolute top-[10px] left-0 h-[4px] bg-primary rounded-l-[2px] pointer-events-none"
-                        style={{
-                          width: `${amount > 0 ? ((allocations[plan.plan_id] || 0) / amount) * 100 : 0}%`,
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
-              {/* Suggested Split Notice */}
+              {/* Notice */}
               <div className="mt-md flex items-start gap-sm p-sm bg-surface-container-low rounded-md border border-surface-variant">
                 <span className="material-symbols-outlined text-secondary text-[20px]">lightbulb</span>
                 <p className="text-body-md text-secondary">
-                  Suggested split applied based on current plan deficits. Adjust sliders to modify.
-                  Total allocation should not exceed incoming amount.
+                  Suggested split applied based on current cycle deficits. Adjust sliders to modify.
+                  If allocation exceeds a cycle&apos;s contribution amount, the excess is automatically
+                  credited to the member&apos;s balance.
                 </p>
               </div>
             </div>

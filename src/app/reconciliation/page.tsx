@@ -114,7 +114,8 @@ export default async function ReconciliationPage() {
             <div className="p-lg border-b border-outline-variant flex justify-between items-center">
               <h3 className="font-headline-md text-headline-md text-on-background">Recent Payments</h3>
             </div>
-            <div className="overflow-x-auto">
+            {/* Desktop Table */}
+            <div className="hidden md:block">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-surface-container-high bg-surface-container-low/50">
@@ -164,6 +165,50 @@ export default async function ReconciliationPage() {
                   )}
                 </tbody>
               </table>
+            </div>
+            {/* Mobile Cards */}
+            <div className="md:hidden p-md space-y-sm">
+              {data.payments.length === 0 ? (
+                <div className="text-center text-secondary text-body-md py-lg">
+                  No payments recorded yet.
+                </div>
+              ) : (
+                data.payments.map((payment, idx) => {
+                  const memberName = (payment.members as unknown as { name: string })?.name ?? 'Unknown';
+                  const isAllocated = payment.status !== 'unallocated';
+
+                  return (
+                    <div key={idx} className="bg-surface border border-outline-variant rounded-lg p-sm">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-body-md font-medium text-on-surface">{memberName}</div>
+                          <div className="text-label-sm text-secondary mt-0.5">
+                            {new Date(payment.received_at).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric',
+                            })}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-body-md font-semibold text-on-surface">{formatCurrency(payment.amount)}</div>
+                          <div className="mt-0.5">
+                            {isAllocated ? (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#D1FAE5] text-[#065F46] border border-[#A7F3D0]">
+                                Matched
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-surface-container-high text-secondary border border-outline-variant">
+                                Unallocated
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>

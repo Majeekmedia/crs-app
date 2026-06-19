@@ -19,7 +19,7 @@ export default function PlanForm() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
         <div>
-          <label htmlFor="contribution_amount" className="block text-label-caps text-secondary uppercase mb-xs">Contribution Amount ($)</label>
+          <label htmlFor="contribution_amount" className="block text-label-caps text-secondary uppercase mb-xs">Contribution Amount (₦)</label>
           <input
             id="contribution_amount"
             name="contribution_amount"
@@ -32,7 +32,7 @@ export default function PlanForm() {
           />
         </div>
         <div>
-          <label htmlFor="payout_amount" className="block text-label-caps text-secondary uppercase mb-xs">Payout Amount ($)</label>
+          <label htmlFor="payout_amount" className="block text-label-caps text-secondary uppercase mb-xs">Payout Amount (₦)</label>
           <input
             id="payout_amount"
             name="payout_amount"
@@ -101,8 +101,10 @@ export default function PlanForm() {
             id="start_date"
             name="start_date"
             type="date"
+            required
             className="w-full bg-surface-container-lowest border border-outline-variant rounded-md px-md py-sm text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
           />
+          <p className="text-body-sm text-secondary mt-xs">Sets the payout schedule for all members. Can be backdated if needed.</p>
         </div>
         <div>
           <label htmlFor="total_slots" className="block text-label-caps text-secondary uppercase mb-xs">Total Slots (Participants)</label>

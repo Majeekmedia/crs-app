@@ -27,7 +27,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-md bg-surface-container-lowest border border-outline-variant rounded-xl p-xl">
         <div className="text-center mb-xl">
           <div className="w-12 h-12 rounded bg-primary text-on-primary flex items-center justify-center mx-auto mb-md font-bold text-xl">
-            P
+            N
           </div>
           <h1 className="font-headline-md text-headline-md text-on-surface font-bold">Create Account</h1>
           <p className="text-body-md text-secondary mt-xs">Register as a new admin</p>

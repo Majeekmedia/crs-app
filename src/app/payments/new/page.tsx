@@ -37,7 +37,7 @@ export default async function NewPaymentPage() {
           </div>
 
           <div>
-            <label htmlFor="amount" className="block text-label-caps text-secondary uppercase mb-xs">Amount ($)</label>
+            <label htmlFor="amount" className="block text-label-caps text-secondary uppercase mb-xs">Amount (₦)</label>
             <input
               id="amount"
               name="amount"

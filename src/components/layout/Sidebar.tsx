@@ -63,7 +63,7 @@ export default function Sidebar() {
         <div className="flex items-center justify-between mb-xl px-sm md:hidden">
           <div>
             <h1 className="font-headline-md text-headline-md font-bold text-on-surface">
-              Precision Ledger
+              Nengi's Precision Ledger
             </h1>
             <p className="text-secondary text-body-md mt-xs">Financial Admin</p>
           </div>
@@ -79,7 +79,7 @@ export default function Sidebar() {
         {/* Logo / Brand (desktop) */}
         <div className="mb-xl px-sm hidden md:block">
           <h1 className="font-headline-md text-headline-md font-bold text-on-surface">
-            Precision Ledger
+            Nengi's Precision Ledger
           </h1>
           <p className="text-secondary text-body-md mt-xs">Financial Admin</p>
         </div>

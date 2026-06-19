@@ -1,6 +1,9 @@
 import { createServerSupabase } from '@/lib/supabase';
-import { formatCurrency, formatDate, formatCycleDuration, getInitials } from '@/lib/utils';
-import { assignMemberToPlan, removeMemberFromPlan, processPayout, deletePlan, startNextCycle } from '@/lib/server-actions';
+import {
+  formatCurrency, formatDate, formatCycleDuration, getInitials,
+  getCurrentCycle, getPayeeForCycle, isStartDateLocked
+} from '@/lib/utils';
+import { assignMemberToPlan, removeMemberFromPlan, processPayout, deletePlan } from '@/lib/server-actions';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -19,10 +22,11 @@ async function getPlanDetail(id: string) {
 
   const { data: planMembers } = await supabase
     .from('plan_members')
-    .select('*, members(id, name)')
+    .select('*, members(id, name, phone)')
     .eq('plan_id', id)
     .order('slot_number');
 
+  // Get allocations with cycle_number joined with payments for member info
   const { data: allocations } = await supabase
     .from('payment_allocations')
     .select('*, payments!inner(member_id, members!inner(name))')
@@ -47,6 +51,17 @@ async function getPlanDetail(id: string) {
   ) ?? 0;
   const outstanding = totalExpected - totalAllocated;
 
+  // Build per-member per-cycle payment map: memberId -> { cycleNumber -> totalPaid }
+  const memberCyclePayments: Record<string, Record<number, number>> = {};
+  for (const alloc of allocations ?? []) {
+    const memberId = (alloc.payments as unknown as { member_id: string })?.member_id;
+    if (!memberId) continue;
+    if (!memberCyclePayments[memberId]) memberCyclePayments[memberId] = {};
+    const cycleNum = alloc.cycle_number ?? 0;
+    memberCyclePayments[memberId][cycleNum] =
+      (memberCyclePayments[memberId][cycleNum] ?? 0) + parseFloat(String(alloc.amount_allocated));
+  }
+
   return {
     plan,
     members: planMembers ?? [],
@@ -56,6 +71,7 @@ async function getPlanDetail(id: string) {
     totalExpected,
     totalAllocated,
     outstanding,
+    memberCyclePayments,
   };
 }
 
@@ -69,8 +85,22 @@ export default async function PlanDetailPage({
 
   if (!data) notFound();
 
-  const { plan, members, payouts, allMembers, totalExpected, totalAllocated, outstanding, allocations } = data;
+  const { plan, members, payouts, allMembers, totalExpected, totalAllocated, outstanding, allocations, memberCyclePayments } = data;
   const progressPct = totalExpected > 0 ? Math.min(100, (totalAllocated / totalExpected) * 100) : 0;
+
+  // Calculate current cycle from dates
+  const currentCycle = plan.start_date && plan.cycle_days
+    ? getCurrentCycle(plan.start_date, plan.cycle_days)
+    : 0;
+  const totalCycles = plan.total_slots;
+  const startDateLocked = plan.start_date && plan.cycle_days
+    ? isStartDateLocked(plan.start_date, plan.cycle_days)
+    : false;
+
+  // Determine which slot should be paid this cycle
+  const currentPayeeSlotNumber = currentCycle > 0
+    ? getPayeeForCycle(currentCycle, totalCycles)
+    : null;
 
   // Track which members have paid (have allocations to this plan)
   const paidMemberIds = new Set(
@@ -79,23 +109,28 @@ export default async function PlanDetailPage({
       .map((a) => a.payments.member_id)
   );
 
-  // Cycle-aware payout tracking
-  // Count how many completed payouts each member has across all cycles
-  const memberPayoutCount = new Map<string, number>();
-  for (const p of payouts) {
-    if (p.status === 'completed') {
-      memberPayoutCount.set(p.member_id, (memberPayoutCount.get(p.member_id) || 0) + 1);
-    }
-  }
+  // Find the member who should be paid this cycle (by slot number)
+  const currentPayeeMember = currentPayeeSlotNumber
+    ? members.find((m) => m.slot_number === currentPayeeSlotNumber) ?? null
+    : null;
 
-  // Members who haven't been paid yet in the current cycle
-  const membersNotPaidInCycle = members.filter((m) => {
-    const count = memberPayoutCount.get(m.member_id) || 0;
-    return count < plan.current_cycle;
-  });
+  // Check if the current payee has already been paid
+  const currentPayeePaid = currentPayeeMember
+    ? payouts.some((p) => p.member_id === currentPayeeMember.member_id && p.cycle_number === currentCycle)
+    : false;
 
-  const nextSlot = membersNotPaidInCycle.length > 0 ? membersNotPaidInCycle[0] : null;
-  const allPaidInCycle = members.length > 0 && membersNotPaidInCycle.length === 0;
+  // All payouts done for this cycle
+  const allPaidInCycle = members.length > 0 && members.every((m) =>
+    payouts.some((p) => p.member_id === m.member_id && p.cycle_number === currentCycle)
+  );
+
+  // Determine which cycles to show for payment status
+  const cyclesToShow = plan.start_date && plan.cycle_days && totalCycles > 0
+    ? Array.from(
+        { length: Math.min(currentCycle + 2, totalCycles) },
+        (_, i) => i + 1
+      )
+    : [];
 
   return (
     <>
@@ -108,10 +143,12 @@ export default async function PlanDetailPage({
           <h2 className="font-headline-lg text-headline-lg text-on-surface">{plan.name}</h2>
           <div className="flex items-center gap-md mt-xs">
             <span className="text-body-md text-secondary">{formatCycleDuration(plan)}</span>
-            {plan.start_date && (
+            <span className="text-secondary">·</span>
+            <span className="text-body-md text-secondary">Started {formatDate(plan.start_date)}</span>
+            {startDateLocked && (
               <>
                 <span className="text-secondary">·</span>
-                <span className="text-body-md text-secondary">Starts {formatDate(plan.start_date)}</span>
+                <span className="text-body-sm text-secondary italic">Start date locked</span>
               </>
             )}
           </div>
@@ -182,37 +219,186 @@ export default async function PlanDetailPage({
             <p className="text-center text-secondary text-body-md py-lg">No members assigned yet.</p>
           ) : (
             <div>
-              <div className="grid grid-cols-4 gap-sm py-sm border-b border-surface-container-high text-label-caps text-secondary">
-                <div className="col-span-2">Member Name</div>
+              <div className="hidden md:grid grid-cols-[auto_1fr_auto] gap-sm py-sm border-b border-surface-container-high text-label-caps text-secondary">
                 <div>Slot</div>
-                <div className="text-right">Status</div>
+                <div>Member Name</div>
+                <div className="text-right">Payments</div>
               </div>
-              {members.map((pm) => {
-                const memberName = (pm.members as unknown as { name: string })?.name ?? 'Unknown';
-                const hasPaid = paidMemberIds.has(pm.member_id);
-                return (
-                  <div key={pm.id} className="grid grid-cols-4 gap-sm py-sm border-b border-surface-container-high items-center hover:bg-surface-container-low transition-colors">
-                    <div className="col-span-2 flex items-center gap-sm">
-                      <div className="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-label-caps text-on-surface-variant">
-                        {getInitials(memberName)}
+
+              {/* Mobile Cards */}
+              <div className="md:hidden space-y-sm mb-sm">
+                {members.map((pm) => {
+                  const memberName = (pm.members as unknown as { name: string })?.name ?? 'Unknown';
+                  const memberPhone = (pm.members as unknown as { phone?: string })?.phone ?? '';
+                  const memberCycleData = memberCyclePayments[pm.member_id] ?? {};
+                  const slotNum = String(pm.slot_number).padStart(2, '0');
+
+                  const cycleStatuses = cyclesToShow.map((c) => {
+                    const paid = memberCycleData[c] ?? 0;
+                    const contribution = parseFloat(String(plan.contribution_amount));
+                    if (paid >= contribution) return 'paid';
+                    if (paid > 0) return 'partial';
+                    return 'unpaid';
+                  });
+
+                  return (
+                    <div key={pm.id} className="bg-surface border border-outline-variant rounded-lg p-sm">
+                      <div className="flex items-center justify-between mb-xs">
+                        <div className="flex items-center gap-sm">
+                          <div className="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-label-caps text-on-surface-variant flex-shrink-0">
+                            {getInitials(memberName)}
+                          </div>
+                          <div>
+                            <div className="text-body-md font-medium text-on-surface">{memberName}</div>
+                            <div className="text-label-sm text-secondary">Slot #{slotNum}</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-xs">
+                          {memberPhone && (
+                            <a
+                              href={`https://wa.me/${memberPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Dear ${memberName}, this is a reminder about your contribution for ${plan.name}. Please make your payment. Thank you.`)}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-secondary hover:text-primary p-1 rounded hover:bg-surface-variant transition-colors"
+                              title="Send WhatsApp reminder"
+                            >
+                              <span className="material-symbols-outlined text-[18px]">chat</span>
+                            </a>
+                          )}
+                          <form action={removeMemberFromPlan.bind(null, pm.id, plan.id)}>
+                            <button type="submit" className="text-secondary hover:text-error p-1 rounded hover:bg-surface-variant transition-colors">
+                              <span className="material-symbols-outlined text-[18px]">remove_circle</span>
+                            </button>
+                          </form>
+                        </div>
                       </div>
-                      <span className="text-body-md text-on-surface">{memberName}</span>
+                      {/* Cycle Payment Indicators */}
+                      {cyclesToShow.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-1 mt-xs pt-xs border-t border-surface-variant">
+                          {cycleStatuses.map((status, idx) => {
+                            const cycleNum = cyclesToShow[idx];
+                            let icon: string;
+                            let color: string;
+                            let label: string;
+                            if (status === 'paid') {
+                              icon = 'check_circle';
+                              color = '#10B981';
+                              label = `Cycle ${cycleNum}: Fully paid`;
+                            } else if (status === 'partial') {
+                              icon = 'radio_button_partial';
+                              color = '#F59E0B';
+                              label = `Cycle ${cycleNum}: Partially paid (${formatCurrency(memberCycleData[cycleNum] ?? 0)})`;
+                            } else {
+                              icon = 'radio_button_unchecked';
+                              color = '#9CA3AF';
+                              label = `Cycle ${cycleNum}: Unpaid`;
+                            }
+                            return (
+                              <span
+                                key={cycleNum}
+                                className="inline-flex items-center gap-0.5 text-[11px] px-1.5 py-0.5 rounded-full border"
+                                style={{
+                                  borderColor: status === 'paid' ? '#A7F3D0' : status === 'partial' ? '#FDE68A' : '#E5E7EB',
+                                  backgroundColor: status === 'paid' ? '#ECFDF5' : status === 'partial' ? '#FFFBEB' : '#F9FAFB',
+                                  color: status === 'paid' ? '#065F46' : status === 'partial' ? '#92400E' : '#6B7280',
+                                }}
+                                title={label}
+                              >
+                                <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                                  {icon === 'radio_button_unchecked' ? 'circle' : icon === 'radio_button_partial' ? 'circle' : icon}
+                                </span>
+                                C{cycleNum}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
-                    <div className="text-numeric-data text-secondary">#{String(pm.slot_number).padStart(2, '0')}</div>
-                    <div className="text-right flex items-center justify-end gap-xs">
-                      <span className="material-symbols-outlined text-[18px]" style={{ color: hasPaid ? '#10B981' : '#EF4444' }}>
-                        {hasPaid ? 'check_circle' : 'cancel'}
-                      </span>
-                      <form action={removeMemberFromPlan.bind(null, pm.id, plan.id)}>
-                        <button type="submit" className="text-secondary hover:text-error p-1 rounded hover:bg-surface-variant transition-colors">
-                          <span className="material-symbols-outlined text-[16px]">remove_circle</span>
-                        </button>
-                      </form>
+                  );
+                })}
+              </div>
+
+              {/* Desktop Table Rows */}
+              <div className="hidden md:block">
+                {members.map((pm) => {
+                  const memberName = (pm.members as unknown as { name: string })?.name ?? 'Unknown';
+                  const memberPhone = (pm.members as unknown as { phone?: string })?.phone ?? '';
+                  const memberCycleData = memberCyclePayments[pm.member_id] ?? {};
+
+                  const cycleStatuses = cyclesToShow.map((c) => {
+                    const paid = memberCycleData[c] ?? 0;
+                    const contribution = parseFloat(String(plan.contribution_amount));
+                    if (paid >= contribution) return 'paid';
+                    if (paid > 0) return 'partial';
+                    return 'unpaid';
+                  });
+
+                  return (
+                    <div key={pm.id} className="grid grid-cols-[auto_1fr_auto] gap-sm py-sm border-b border-surface-container-high items-center hover:bg-surface-container-low transition-colors">
+                      <div className="text-numeric-data text-secondary font-medium">#{String(pm.slot_number).padStart(2, '0')}</div>
+                      <div className="flex items-center gap-sm min-w-0">
+                        <div className="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-label-caps text-on-surface-variant flex-shrink-0">
+                          {getInitials(memberName)}
+                        </div>
+                        <span className="text-body-md text-on-surface truncate">{memberName}</span>
+                        {memberPhone && (
+                          <a
+                            href={`https://wa.me/${memberPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Dear ${memberName}, this is a reminder about your contribution for ${plan.name}. Please make your payment. Thank you.`)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-secondary hover:text-primary p-0.5 rounded hover:bg-surface-variant transition-colors flex-shrink-0"
+                            title="Send WhatsApp reminder"
+                          >
+                            <span className="material-symbols-outlined text-[16px]">chat</span>
+                          </a>
+                        )}
+                        {/* Cycle Payment Indicators - Desktop */}
+                        {cyclesToShow.length > 0 && (
+                          <div className="flex items-center gap-0.5 ml-sm flex-shrink-0" title="Cycle payment status">
+                            {cycleStatuses.map((status, idx) => {
+                              const cycleNum = cyclesToShow[idx];
+                              let icon: string;
+                              let color: string;
+                              let label: string;
+                              if (status === 'paid') {
+                                icon = 'check_circle';
+                                color = '#10B981';
+                                label = `Cycle ${cycleNum}: Fully paid`;
+                              } else if (status === 'partial') {
+                                icon = 'radio_button_partial';
+                                color = '#F59E0B';
+                                label = `Cycle ${cycleNum}: Partially paid (${formatCurrency(memberCycleData[cycleNum] ?? 0)})`;
+                              } else {
+                                icon = 'radio_button_unchecked';
+                                color = '#9CA3AF';
+                                label = `Cycle ${cycleNum}: Unpaid`;
+                              }
+                              return (
+                                <span
+                                  key={cycleNum}
+                                  className="material-symbols-outlined text-[14px]"
+                                  style={{ color }}
+                                  title={label}
+                                >
+                                  {icon}
+                                </span>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                      <div className="text-right flex items-center justify-end gap-xs">
+                        <form action={removeMemberFromPlan.bind(null, pm.id, plan.id)}>
+                          <button type="submit" className="text-secondary hover:text-error p-1 rounded hover:bg-surface-variant transition-colors">
+                            <span className="material-symbols-outlined text-[16px]">remove_circle</span>
+                          </button>
+                        </form>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+</div>
           )}
         </div>
 
@@ -251,47 +437,106 @@ export default async function PlanDetailPage({
                 Payout Tracker
               </h3>
               <span className="text-label-caps text-secondary bg-surface-container-high px-sm py-xs rounded-full">
-                Cycle {plan.current_cycle}
+                {currentCycle > 0 ? `Cycle ${currentCycle} of ${totalCycles}` : 'Not started'}
               </span>
             </div>
 
             {/* Current Recipient */}
             <div className="mb-md p-md bg-surface border border-outline-variant rounded-lg">
-              <div>
-                <span className="text-label-caps text-secondary block mb-xs">Next Recipient</span>
-                <span className="text-numeric-data text-on-surface block">
-                  {nextSlot
-                    ? `#${String(nextSlot.slot_number).padStart(2, '0')} ${(nextSlot.members as unknown as { name: string })?.name ?? 'Unknown'}`
-                    : allPaidInCycle
-                      ? `Cycle ${plan.current_cycle} — All paid out`
-                      : 'No members assigned'}
-                </span>
-              </div>
-              {nextSlot && (
-                <form action={processPayout} className="mt-sm">
-                  <input type="hidden" name="plan_id" value={plan.id} />
-                  <input type="hidden" name="member_id" value={nextSlot.member_id} />
-                  <input type="hidden" name="cycle_number" value={plan.current_cycle} />
-                  <input type="hidden" name="amount" value={plan.payout_amount} />
-                  <button
-                    type="submit"
-                    className="w-full mt-sm bg-primary text-on-primary text-body-md py-sm rounded-lg hover:bg-primary-container transition-colors"
-                  >
-                    Process Payout
-                  </button>
-                </form>
-              )}
-              {allPaidInCycle && (
-                <form action={startNextCycle.bind(null, plan.id)} className="mt-sm">
-                  <button
-                    type="submit"
-                    className="w-full mt-sm bg-secondary-container text-on-secondary-container text-body-md py-sm rounded-lg hover:bg-surface-variant transition-colors border border-outline-variant"
-                  >
-                    Start Next Cycle
-                  </button>
-                </form>
+              {currentCycle > 0 && currentCycle <= totalCycles ? (
+                <>
+                  <div>
+                    <span className="text-label-caps text-secondary block mb-xs">
+                      {currentPayeePaid ? 'Last Payout' : 'Current Recipient'}
+                    </span>
+                    <span className="text-numeric-data text-on-surface block">
+                      {currentPayeeMember
+                        ? `#${String(currentPayeeMember.slot_number).padStart(2, '0')} ${(currentPayeeMember.members as unknown as { name: string })?.name ?? 'Unknown'}`
+                        : 'No member assigned to this slot'}
+                    </span>
+                    {currentPayeeMember && (currentPayeeMember.members as unknown as { phone?: string })?.phone && (
+                      <a
+                        href={`https://wa.me/${String((currentPayeeMember.members as unknown as { phone: string })?.phone).replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Dear ${(currentPayeeMember.members as unknown as { name: string })?.name}, your payout is ready for collection. Please check your account. Thank you.`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 mt-xs text-body-sm text-secondary hover:text-primary transition-colors"
+                      >
+                        <span className="material-symbols-outlined text-[14px]">chat</span>
+                        Remind via WhatsApp
+                      </a>
+                    )}
+                  </div>
+                  {currentPayeeMember && !currentPayeePaid && (
+                    <form action={processPayout} className="mt-sm">
+                      <input type="hidden" name="plan_id" value={plan.id} />
+                      <input type="hidden" name="member_id" value={currentPayeeMember.member_id} />
+                      <input type="hidden" name="cycle_number" value={currentCycle} />
+                      <input type="hidden" name="amount" value={plan.payout_amount} />
+                      <button
+                        type="submit"
+                        className="w-full mt-sm bg-primary text-on-primary text-body-md py-sm rounded-lg hover:bg-primary-container transition-colors"
+                      >
+                        Process Payout
+                      </button>
+                    </form>
+                  )}
+                  {currentPayeePaid && (
+                    <p className="text-body-sm text-secondary mt-sm flex items-center gap-xs">
+                      <span className="material-symbols-outlined text-[16px]" style={{ color: '#10B981' }}>check_circle</span>
+                      Paid this cycle
+                    </p>
+                  )}
+                </>
+              ) : currentCycle > totalCycles ? (
+                <p className="text-body-md text-secondary">All cycles complete — every member has received their payout.</p>
+              ) : (
+                <p className="text-body-md text-secondary">Plan starts {formatDate(plan.start_date)}.</p>
               )}
             </div>
+
+            {/* Cycle Timeline */}
+            {plan.start_date && plan.cycle_days && (
+              <div className="mb-md">
+                <span className="text-label-caps text-secondary uppercase tracking-wider block mb-sm">Cycle Timeline</span>
+                <div className="flex flex-col gap-xs">
+                  {Array.from({ length: Math.min(totalCycles, 12) }, (_, i) => {
+                    const cycleNum = i + 1;
+                    const slotNum = getPayeeForCycle(cycleNum, totalCycles);
+                    const isPast = cycleNum < currentCycle;
+                    const isCurrent = cycleNum === currentCycle;
+                    const payee = members.find((m) => m.slot_number === slotNum);
+                    const payeeName = payee
+                      ? (payee.members as unknown as { name: string })?.name ?? `Slot #${slotNum}`
+                      : `Slot #${slotNum}`;
+
+                    return (
+                      <div
+                        key={cycleNum}
+                        className={`flex items-center gap-sm px-sm py-xs rounded-md text-body-sm ${
+                          isCurrent
+                            ? 'bg-primary-container text-on-primary-container'
+                            : isPast
+                            ? 'text-secondary'
+                            : 'text-on-surface'
+                        }`}
+                      >
+                        <span className="font-medium w-6">#{cycleNum}</span>
+                        <span className="flex-1">{payeeName}</span>
+                        {isPast && (
+                          <span className="material-symbols-outlined text-[14px]" style={{ color: '#10B981' }}>check_circle</span>
+                        )}
+                        {isCurrent && (
+                          <span className="material-symbols-outlined text-[14px]" style={{ color: '#6366F1' }}>arrow_right</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                  {totalCycles > 12 && (
+                    <p className="text-body-sm text-secondary mt-xs">...and {totalCycles - 12} more cycles</p>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Completed Payouts */}
             <div>
