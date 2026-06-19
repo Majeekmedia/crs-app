@@ -163,22 +163,22 @@ export default function AllocationModal({
         </div>
 
         {/* Body */}
-        <div className="p-lg flex-grow overflow-y-auto max-h-[60vh]">
+        <div className="p-md md:p-lg flex-grow overflow-y-auto max-h-[60vh]">
           {/* Payment Summary */}
-          <div className="bg-surface border border-outline-variant rounded-lg p-md mb-xl flex items-center justify-between">
+          <div className="bg-surface border border-outline-variant rounded-lg p-md mb-xl flex flex-col md:flex-row md:items-center md:justify-between gap-sm">
             <div className="flex items-center gap-md">
-              <div className="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
-                <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container shrink-0">
+                <span className="material-symbols-outlined text-[20px] md:text-[24px]" style={{ fontVariationSettings: "'FILL' 1" }}>
                   account_balance
                 </span>
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="text-label-caps text-secondary uppercase">Incoming Payment</p>
-                <p className="text-body-md text-on-surface font-medium mt-base">{memberName}</p>
+                <p className="text-body-md text-on-surface font-medium mt-base truncate">{memberName}</p>
               </div>
             </div>
-            <div className="text-right">
-              <p className="font-display text-[32px] leading-[40px] tracking-[-0.01em] font-semibold text-primary">
+            <div className="text-right ml-auto md:ml-0">
+              <p className="font-display text-[24px] md:text-[32px] leading-[32px] md:leading-[40px] tracking-[-0.01em] font-semibold text-primary">
                 {formatCurrency(amount)}
               </p>
             </div>
@@ -228,16 +228,16 @@ export default function AllocationModal({
                   return (
                     <div key={plan.plan_id} className="border border-outline-variant rounded-lg overflow-hidden">
                       {/* Plan Header */}
-                      <div className="bg-surface-bright px-md py-sm flex justify-between items-center border-b border-outline-variant">
-                        <div>
-                          <p className="text-body-md text-on-surface font-medium">{plan.plan_name}</p>
+                      <div className="bg-surface-bright px-md py-sm flex flex-col md:flex-row md:justify-between md:items-center gap-xs border-b border-outline-variant">
+                        <div className="min-w-0">
+                          <p className="text-body-sm md:text-body-md text-on-surface font-medium truncate">{plan.plan_name}</p>
                           <p className="text-label-sm text-secondary mt-xs">
                             Cycle {plan.current_cycle}/{plan.total_slots} &middot;{' '}
-                            {formatCurrency(plan.contribution_amount)}/slot{plan.slot_count && plan.slot_count > 1 ? ` · ${plan.slot_count} slots (${formatCurrency(plan.contribution_amount * plan.slot_count)}/cycle)` : ''}
+                            {formatCurrency(plan.contribution_amount)}/slot{plan.slot_count && plan.slot_count > 1 ? ` · ${plan.slot_count} slots` : ''}
                           </p>
                         </div>
-                        <div className="text-right">
-                          <p className="text-numeric-data text-on-surface">
+                        <div className="text-right shrink-0">
+                          <p className="text-numeric-data text-on-surface text-body-sm md:text-body-md">
                             {formatCurrency(planTotalAllocated)}
                           </p>
                           <p className="text-label-sm text-secondary mt-xs">
@@ -271,29 +271,31 @@ export default function AllocationModal({
 
                           return (
                             <div key={key} className={`px-md py-sm ${rowBg}`}>
-                              <div className="flex items-center justify-between mb-xs">
-                                <div className="flex items-center gap-sm">
+                              {/* Cycle header - wrap on mobile */}
+                              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-xs gap-xs">
+                                <div className="flex items-center gap-sm min-w-0">
                                   {badge && (
-                                    <span className={`material-symbols-outlined text-[16px] ${badge.color}`} title={badge.label}>
+                                    <span className={`material-symbols-outlined text-[16px] shrink-0 ${badge.color}`} title={badge.label}>
                                       {badge.icon}
                                     </span>
                                   )}
-                                  <span className="text-body-md text-on-surface font-medium">
+                                  <span className="text-body-sm md:text-body-md text-on-surface font-medium whitespace-nowrap">
                                     Cycle {cycle.cycle_number}
                                   </span>
                                   {cycle.paid > 0 && (
-                                    <span className="text-label-sm text-secondary">
+                                    <span className="text-label-sm text-secondary whitespace-nowrap">
                                       ({formatCurrency(cycle.paid)} paid)
                                     </span>
                                   )}
                                 </div>
-                                <div className="text-label-sm text-secondary">
+                                <div className="text-label-sm text-secondary shrink-0">
                                   Outstanding: {formatCurrency(cycle.outstanding)}
                                 </div>
                               </div>
-                              <div className="flex items-center gap-sm">
+                              {/* Allocation input - stack on mobile */}
+                              <div className="flex flex-col sm:flex-row sm:items-center gap-sm">
                                 <span className="text-label-sm text-secondary whitespace-nowrap">Allocate:</span>
-                                <div className="relative flex-1">
+                                <div className="relative flex-1 w-full sm:w-auto">
                                   <input
                                     type="number"
                                     min="0"
@@ -308,18 +310,20 @@ export default function AllocationModal({
                                     aria-label={`Allocate to ${plan.plan_name} Cycle ${cycle.cycle_number}`}
                                   />
                                 </div>
-                                <span className="text-label-sm text-secondary whitespace-nowrap">
-                                  / {formatCurrency(cycle.outstanding)}
-                                </span>
-                                {cycle.outstanding > 0 && (
-                                  <button
-                                    type="button"
-                                    onClick={() => handleAllocationChange(key, Math.min(cycle.outstanding, cycle.outstanding + allocValue))}
-                                    className="text-label-sm text-primary hover:text-primary-container px-sm py-1 rounded hover:bg-primary/5 transition-colors font-medium"
-                                  >
-                                    Max
-                                  </button>
-                                )}
+                                <div className="flex items-center gap-sm shrink-0">
+                                  <span className="text-label-sm text-secondary whitespace-nowrap">
+                                    / {formatCurrency(cycle.outstanding)}
+                                  </span>
+                                  {cycle.outstanding > 0 && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleAllocationChange(key, Math.min(cycle.outstanding, cycle.outstanding + allocValue))}
+                                      className="text-label-sm text-primary hover:text-primary-container px-sm py-1 rounded hover:bg-primary/5 transition-colors font-medium"
+                                    >
+                                      Max
+                                    </button>
+                                  )}
+                                </div>
                               </div>
                               {cycle.outstanding === 0 && cycle.paid > 0 && (
                                 <p className="text-label-sm text-tertiary mt-xs flex items-center gap-xs">

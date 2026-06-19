@@ -1,9 +1,9 @@
 import { createServerSupabase } from '@/lib/supabase';
 import { formatCurrency, formatDate, getInitials } from '@/lib/utils';
 import Link from 'next/link';
-import { deletePayment } from '@/lib/server-actions';
 import AllocationModal from '@/components/payments/AllocationModal';
 import AllocationModalWrapper from '@/components/payments/AllocationModalWrapper';
+import ConfirmDeletePayment from '@/components/payments/ConfirmDeletePayment';
 import ViewNoteButton from '@/components/payments/ViewNoteButton';
 
 export const dynamic = 'force-dynamic';
@@ -182,14 +182,7 @@ export default async function PaymentsPage({
                             Allocate
                           </Link>
                         )}
-                        <form action={deletePayment.bind(null, payment.id)}>
-                          <button
-                            type="submit"
-                            className="text-secondary hover:text-error p-1 rounded hover:bg-surface-variant transition-colors"
-                          >
-                            <span className="material-symbols-outlined text-[18px]">delete</span>
-                          </button>
-                        </form>
+                        <ConfirmDeletePayment paymentId={payment.id} />
                       </div>
                     </td>
                   </tr>
@@ -256,11 +249,7 @@ export default async function PaymentsPage({
                     {payment.notes && (
                       <ViewNoteButton note={payment.notes} memberName={memberName} />
                     )}
-                    <form action={deletePayment.bind(null, payment.id)}>
-                      <button type="submit" className="text-secondary hover:text-error p-2 rounded-lg hover:bg-surface-variant transition-colors">
-                        <span className="material-symbols-outlined text-[18px]">delete</span>
-                      </button>
-                    </form>
+                    <ConfirmDeletePayment paymentId={payment.id} />
                   </div>
                 )}
                 {!isUnallocated && (
@@ -268,11 +257,7 @@ export default async function PaymentsPage({
                     {payment.notes && (
                       <ViewNoteButton note={payment.notes} memberName={memberName} />
                     )}
-                    <form action={deletePayment.bind(null, payment.id)}>
-                      <button type="submit" className="text-secondary hover:text-error p-2 rounded-lg hover:bg-surface-variant transition-colors">
-                        <span className="material-symbols-outlined text-[18px]">delete</span>
-                      </button>
-                    </form>
+                    <ConfirmDeletePayment paymentId={payment.id} />
                   </div>
                 )}
               </div>
