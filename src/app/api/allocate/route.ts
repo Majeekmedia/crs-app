@@ -43,6 +43,16 @@ export async function POST(request: NextRequest) {
         if (plan) {
           const contribution = parseFloat(String(plan.contribution_amount));
 
+          // Count how many slots this member has in this plan
+          // (so we can allow up to slotCount × contribution_amount per cycle)
+          const { count: slotCount } = await supabase
+            .from('plan_members')
+            .select('*', { count: 'exact', head: true })
+            .eq('plan_id', alloc.plan_id)
+            .eq('member_id', memberId);
+
+          const perCycleLimit = contribution * Math.max(1, slotCount ?? 1);
+
           // Get existing allocations for this cycle
           const { data: existingAllocations } = await supabase
             .from('payment_allocations')
@@ -54,9 +64,9 @@ export async function POST(request: NextRequest) {
             ?.reduce((sum, a) => sum + parseFloat(String(a.amount_allocated)), 0) ?? 0;
 
           const newTotal = existingTotal + amountToAllocate;
-          if (newTotal > contribution) {
+          if (newTotal > perCycleLimit) {
             // Excess beyond contribution: put the extra into member balance
-            const excess = newTotal - contribution;
+            const excess = newTotal - perCycleLimit;
             excessToBalance += excess;
             amountToAllocate -= excess;
           }

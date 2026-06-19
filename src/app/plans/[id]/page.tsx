@@ -29,8 +29,15 @@ async function getPlanDetail(id: string) {
   // Get allocations with cycle_number joined with payments for member info
   const { data: allocations } = await supabase
     .from('payment_allocations')
-    .select('*, payments!inner(member_id, members!inner(name))')
+    .select('*, payments!inner(member_id)')
     .eq('plan_id', id);
+
+  // Fetch member names for allocation member_ids
+  const allocationMemberIds = Array.from(new Set((allocations ?? []).map((a) => (a.payments as unknown as { member_id: string })?.member_id).filter(Boolean))) as string[];
+  const { data: allocationMembers } = allocationMemberIds.length > 0
+    ? await supabase.from('members').select('id, name').in('id', allocationMemberIds)
+    : { data: [] };
+  const memberNameMap = new Map((allocationMembers ?? []).map((m) => [m.id, m.name]));
 
   const { data: payouts } = await supabase
     .from('payouts')
@@ -50,6 +57,12 @@ async function getPlanDetail(id: string) {
     0
   ) ?? 0;
   const outstanding = totalExpected - totalAllocated;
+
+  // Count how many slots each member holds in this plan
+  const memberSlotCount: Record<string, number> = {};
+  for (const pm of planMembers ?? []) {
+    memberSlotCount[pm.member_id] = (memberSlotCount[pm.member_id] ?? 0) + 1;
+  }
 
   // Build per-member per-cycle payment map: memberId -> { cycleNumber -> totalPaid }
   const memberCyclePayments: Record<string, Record<number, number>> = {};
@@ -72,6 +85,8 @@ async function getPlanDetail(id: string) {
     totalAllocated,
     outstanding,
     memberCyclePayments,
+    memberNameMap,
+    memberSlotCount,
   };
 }
 
@@ -85,7 +100,7 @@ export default async function PlanDetailPage({
 
   if (!data) notFound();
 
-  const { plan, members, payouts, allMembers, totalExpected, totalAllocated, outstanding, allocations, memberCyclePayments } = data;
+  const { plan, members, payouts, allMembers, totalExpected, totalAllocated, outstanding, allocations, memberCyclePayments, memberNameMap, memberSlotCount } = data;
   const progressPct = totalExpected > 0 ? Math.min(100, (totalAllocated / totalExpected) * 100) : 0;
 
   // Calculate current cycle from dates
@@ -187,7 +202,6 @@ export default async function PlanDetailPage({
                 >
                   <option value="">Select member...</option>
                   {allMembers
-                    .filter((m) => !members.some((pm) => pm.member_id === m.id))
                     .map((m) => (
                       <option key={m.id} value={m.id}>{m.name}</option>
                     ))}
@@ -233,9 +247,10 @@ export default async function PlanDetailPage({
                   const memberCycleData = memberCyclePayments[pm.member_id] ?? {};
                   const slotNum = String(pm.slot_number).padStart(2, '0');
 
+                  const memberSlotCountVal = memberSlotCount[pm.member_id] ?? 1;
                   const cycleStatuses = cyclesToShow.map((c) => {
                     const paid = memberCycleData[c] ?? 0;
-                    const contribution = parseFloat(String(plan.contribution_amount));
+                    const contribution = parseFloat(String(plan.contribution_amount)) * memberSlotCountVal;
                     if (paid >= contribution) return 'paid';
                     if (paid > 0) return 'partial';
                     return 'unpaid';
@@ -325,9 +340,10 @@ export default async function PlanDetailPage({
                   const memberPhone = (pm.members as unknown as { phone?: string })?.phone ?? '';
                   const memberCycleData = memberCyclePayments[pm.member_id] ?? {};
 
+                  const memberSlotCountVal = memberSlotCount[pm.member_id] ?? 1;
                   const cycleStatuses = cyclesToShow.map((c) => {
                     const paid = memberCycleData[c] ?? 0;
-                    const contribution = parseFloat(String(plan.contribution_amount));
+                    const contribution = parseFloat(String(plan.contribution_amount)) * memberSlotCountVal;
                     if (paid >= contribution) return 'paid';
                     if (paid > 0) return 'partial';
                     return 'unpaid';

@@ -18,6 +18,7 @@ interface PlanWithCycles {
   current_cycle: number;
   outstanding: number;
   cycles: CycleInfo[];
+  slot_count?: number;
 }
 
 interface MemberOutstandingResponse {
@@ -230,7 +231,7 @@ export default function AllocationModal({
                           <p className="text-body-md text-on-surface font-medium">{plan.plan_name}</p>
                           <p className="text-label-sm text-secondary mt-xs">
                             Cycle {plan.current_cycle}/{plan.total_slots} &middot;{' '}
-                            {formatCurrency(plan.contribution_amount)} per cycle
+                            {formatCurrency(plan.contribution_amount)}/slot{plan.slot_count && plan.slot_count > 1 ? ` · ${plan.slot_count} slots (${formatCurrency(plan.contribution_amount * plan.slot_count)}/cycle)` : ''}
                           </p>
                         </div>
                         <div className="text-right">

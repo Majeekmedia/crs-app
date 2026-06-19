@@ -20,11 +20,12 @@ export async function GET(request: NextRequest) {
 
   const balance = parseFloat(String(member?.balance ?? 0));
 
-  // Get member's active plans
+  // Get member's active plans (may have multiple rows per plan if member holds multiple slots)
   const { data: planMembers } = await supabase
     .from('plan_members')
     .select(`
       plan_id,
+      slot_number,
       plans!inner (id, name, contribution_amount, status, total_slots, start_date, cycle_days)
     `)
     .eq('member_id', memberId)
@@ -34,21 +35,31 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ balance, plans: [] });
   }
 
-  const plans = [];
+  // Group by plan_id to count slots and avoid duplicate plan entries
+  const planMap = new Map<string, {
+    plan: { id: string; name: string; contribution_amount: number; status: string; total_slots: number; start_date: string; cycle_days: number };
+    slotCount: number;
+  }>();
 
   for (const pm of planMembers) {
-    const plan = pm.plans as unknown as {
-      id: string;
-      name: string;
-      contribution_amount: number;
-      status: string;
-      total_slots: number;
-      start_date: string;
-      cycle_days: number;
+    const p = pm.plans as unknown as {
+      id: string; name: string; contribution_amount: number; status: string;
+      total_slots: number; start_date: string; cycle_days: number;
     };
+    if (!planMap.has(p.id)) {
+      planMap.set(p.id, { plan: p, slotCount: 0 });
+    }
+    planMap.get(p.id)!.slotCount += 1;
+  }
 
+  const plans = [];
+
+  const planEntries = Array.from(planMap.entries());
+  for (let pi = 0; pi < planEntries.length; pi++) {
+    const { plan, slotCount } = planEntries[pi][1];
     const contributionAmount = parseFloat(String(plan.contribution_amount));
     const totalExpected = plan.total_slots * contributionAmount;
+    const memberCycleContribution = contributionAmount * slotCount;
 
     // Get all allocations for this plan (with cycle_number if available)
     const { data: allocations } = await supabase
@@ -82,11 +93,11 @@ export async function GET(request: NextRequest) {
         ?.filter((a) => a.cycle_number === c)
         .reduce((sum, a) => sum + parseFloat(String(a.amount_allocated)), 0) ?? 0;
 
-      const cycleOutstanding = Math.max(0, contributionAmount - cycleAllocations);
+      const cycleOutstanding = Math.max(0, memberCycleContribution - cycleAllocations);
 
       cycles.push({
         cycle_number: c,
-        contribution: contributionAmount,
+        contribution: memberCycleContribution,
         paid: cycleAllocations,
         outstanding: cycleOutstanding,
       });
@@ -101,6 +112,7 @@ export async function GET(request: NextRequest) {
         current_cycle: currentCycle,
         outstanding,
         cycles,
+        slot_count: slotCount,
       });
     }
   }
