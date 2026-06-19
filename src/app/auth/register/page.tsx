@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState } from 'react';
 import { signUp } from '@/lib/server-actions';
 import Link from 'next/link';
@@ -26,9 +27,20 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md bg-surface-container-lowest border border-outline-variant rounded-xl p-xl">
         <div className="text-center mb-xl">
-          <div className="w-12 h-12 rounded bg-primary text-on-primary flex items-center justify-center mx-auto mb-md font-bold text-xl">
-            N
-          </div>
+          <Image
+            src="/icons/nengilogo_dark.png"
+            alt="Nengi's Precision Ledger"
+            width={48}
+            height={48}
+            className="block dark:hidden mx-auto mb-md"
+          />
+          <Image
+            src="/icons/nengilogo_light.png"
+            alt="Nengi's Precision Ledger"
+            width={48}
+            height={48}
+            className="hidden dark:block mx-auto mb-md"
+          />
           <h1 className="font-headline-md text-headline-md text-on-surface font-bold">Create Account</h1>
           <p className="text-body-md text-secondary mt-xs">Register as a new admin</p>
         </div>

@@ -21,25 +21,25 @@ const config: Config = {
         "on-primary-fixed-variant": "#2e3a54",
         "surface-tint": "#14213d",
 
-        // Secondary - Golden Yellow
-        secondary: "#fca311",
-        "on-secondary": "#000000",
-        "secondary-container": "#fef3d5",
+        // Secondary - Black (used for text, icons, and UI elements)
+        secondary: "#000000",
+        "on-secondary": "#ffffff",
+        "secondary-container": "#e5e5e5",
         "on-secondary-container": "#000000",
-        "secondary-fixed": "#fef3d5",
-        "secondary-fixed-dim": "#fde095",
+        "secondary-fixed": "#e5e5e5",
+        "secondary-fixed-dim": "#d4d4d4",
         "on-secondary-fixed": "#000000",
-        "on-secondary-fixed-variant": "#5c3c00",
+        "on-secondary-fixed-variant": "#333333",
 
-        // Tertiary - Rich Red accent
-        tertiary: "#d62828",
+        // Tertiary - Dark gray (for subtle accents)
+        tertiary: "#4a4a4a",
         "on-tertiary": "#ffffff",
-        "tertiary-container": "#fcd6d6",
+        "tertiary-container": "#e0e0e0",
         "on-tertiary-container": "#000000",
-        "tertiary-fixed": "#fcd6d6",
-        "tertiary-fixed-dim": "#f8a8a8",
+        "tertiary-fixed": "#e0e0e0",
+        "tertiary-fixed-dim": "#cccccc",
         "on-tertiary-fixed": "#000000",
-        "on-tertiary-fixed-variant": "#8c1515",
+        "on-tertiary-fixed-variant": "#333333",
 
         // Error
         error: "#ba1a1a",
