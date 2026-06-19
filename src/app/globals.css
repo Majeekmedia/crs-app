@@ -26,7 +26,7 @@ input[type=range]::-webkit-slider-thumb {
   height: 16px;
   width: 16px;
   border-radius: 50%;
-  background: #000000;
+  background: #14213d;
   cursor: pointer;
   margin-top: -6px;
   box-shadow: 0 0 0 2px #ffffff, 0 1px 3px rgba(0,0,0,0.3);
@@ -42,7 +42,7 @@ input[type=range]:focus {
   outline: none;
 }
 input[type=range]:focus::-webkit-slider-thumb {
-  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #000000;
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #14213d;
 }
 
 /* Scrollbar styling */

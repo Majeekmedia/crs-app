@@ -8,6 +8,8 @@ interface CycleInfo {
   contribution: number;
   paid: number;
   outstanding: number;
+  isPast?: boolean;
+  isFuture?: boolean;
 }
 
 interface PlanWithCycles {
@@ -250,48 +252,74 @@ export default function AllocationModal({
                           const key = allocKey(plan.plan_id, cycle.cycle_number);
                           const allocValue = allocations[key] || 0;
                           const isCurrentCycle = cycle.cycle_number === plan.current_cycle;
+                          const isPast = cycle.isPast && !isCurrentCycle;
+                          const isFuture = cycle.isFuture && !isCurrentCycle;
+
+                          const rowBg = isPast
+                            ? 'bg-surface-container-low/30'
+                            : isCurrentCycle
+                            ? 'bg-primary-container/10'
+                            : '';
+
+                          const badge = isPast
+                            ? { icon: 'history', label: 'Past cycle', color: 'text-secondary' }
+                            : isCurrentCycle
+                            ? { icon: 'play_arrow', label: 'Current cycle', color: 'text-primary' }
+                            : isFuture
+                            ? { icon: 'schedule', label: 'Upcoming cycle', color: 'text-secondary' }
+                            : null;
 
                           return (
-                            <div
-                              key={key}
-                              className={`px-md py-sm ${isCurrentCycle ? 'bg-primary-container/10' : ''}`}
-                            >
-                              <div className="flex justify-between items-center mb-xs">
+                            <div key={key} className={`px-md py-sm ${rowBg}`}>
+                              <div className="flex items-center justify-between mb-xs">
                                 <div className="flex items-center gap-sm">
-                                  {isCurrentCycle && (
-                                    <span className="text-[14px]" title="Current cycle">▶</span>
+                                  {badge && (
+                                    <span className={`material-symbols-outlined text-[16px] ${badge.color}`} title={badge.label}>
+                                      {badge.icon}
+                                    </span>
                                   )}
                                   <span className="text-body-md text-on-surface font-medium">
                                     Cycle {cycle.cycle_number}
                                   </span>
                                   {cycle.paid > 0 && (
                                     <span className="text-label-sm text-secondary">
-                                      ({formatCurrency(cycle.paid)} already paid)
+                                      ({formatCurrency(cycle.paid)} paid)
                                     </span>
                                   )}
                                 </div>
-                                <div className="flex items-center gap-md">
-                                  <span className="text-numeric-data text-on-surface text-body-md">
-                                    {formatCurrency(allocValue)}
-                                  </span>
-                                  <span className="text-label-sm text-secondary min-w-[60px] text-right">
-                                    / {formatCurrency(cycle.outstanding)}
-                                  </span>
+                                <div className="text-label-sm text-secondary">
+                                  Outstanding: {formatCurrency(cycle.outstanding)}
                                 </div>
                               </div>
-                              <div className="relative pt-xs">
-                                <input
-                                  type="range"
-                                  min="0"
-                                  max={Math.max(0, cycle.outstanding + allocValue)}
-                                  step="0.01"
-                                  value={allocValue}
-                                  onChange={(e) =>
-                                    handleAllocationChange(key, parseFloat(e.target.value) || 0)
-                                  }
-                                  className="w-full"
-                                  aria-label={`Allocate to ${plan.plan_name} Cycle ${cycle.cycle_number}`}
-                                />
+                              <div className="flex items-center gap-sm">
+                                <span className="text-label-sm text-secondary whitespace-nowrap">Allocate:</span>
+                                <div className="relative flex-1">
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    max={Math.max(0, cycle.outstanding + allocValue)}
+                                    step="100"
+                                    value={allocValue}
+                                    onChange={(e) => {
+                                      const val = parseFloat(e.target.value);
+                                      handleAllocationChange(key, isNaN(val) ? 0 : Math.max(0, Math.min(val, cycle.outstanding + allocValue)));
+                                    }}
+                                    className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-sm py-1.5 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                    aria-label={`Allocate to ${plan.plan_name} Cycle ${cycle.cycle_number}`}
+                                  />
+                                </div>
+                                <span className="text-label-sm text-secondary whitespace-nowrap">
+                                  / {formatCurrency(cycle.outstanding)}
+                                </span>
+                                {cycle.outstanding > 0 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleAllocationChange(key, Math.min(cycle.outstanding, cycle.outstanding + allocValue))}
+                                    className="text-label-sm text-primary hover:text-primary-container px-sm py-1 rounded hover:bg-primary/5 transition-colors font-medium"
+                                  >
+                                    Max
+                                  </button>
+                                )}
                               </div>
                               {cycle.outstanding === 0 && cycle.paid > 0 && (
                                 <p className="text-label-sm text-tertiary mt-xs flex items-center gap-xs">

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useMobileMenu } from '@/lib/mobile-menu-context';
 import { signOut } from '@/lib/server-actions';
@@ -61,11 +62,27 @@ export default function Sidebar() {
       >
         {/* Close button (mobile only) */}
         <div className="flex items-center justify-between mb-xl px-sm md:hidden">
-          <div>
-            <h1 className="font-headline-md text-headline-md font-bold text-on-surface">
-              Nengi's Precision Ledger
-            </h1>
-            <p className="text-secondary text-body-md mt-xs">Financial Admin</p>
+          <div className="flex items-center gap-sm">
+            <Image
+              src="/icons/nengilogo_dark.png"
+              alt="Nengi's Precision Ledger"
+              width={36}
+              height={36}
+              className="block dark:hidden"
+            />
+            <Image
+              src="/icons/nengilogo_light.png"
+              alt="Nengi's Precision Ledger"
+              width={36}
+              height={36}
+              className="hidden dark:block"
+            />
+            <div>
+              <h1 className="font-headline-md text-headline-md font-bold text-on-surface">
+                Nengi's Precision Ledger
+              </h1>
+              <p className="text-secondary text-body-md mt-xs">Financial Admin</p>
+            </div>
           </div>
           <button
             onClick={close}
@@ -78,10 +95,28 @@ export default function Sidebar() {
 
         {/* Logo / Brand (desktop) */}
         <div className="mb-xl px-sm hidden md:block">
-          <h1 className="font-headline-md text-headline-md font-bold text-on-surface">
-            Nengi's Precision Ledger
-          </h1>
-          <p className="text-secondary text-body-md mt-xs">Financial Admin</p>
+          <div className="flex items-center gap-sm mb-xs">
+            <Image
+              src="/icons/nengilogo_dark.png"
+              alt="Nengi's Precision Ledger"
+              width={40}
+              height={40}
+              className="block dark:hidden"
+            />
+            <Image
+              src="/icons/nengilogo_light.png"
+              alt="Nengi's Precision Ledger"
+              width={40}
+              height={40}
+              className="hidden dark:block"
+            />
+            <div>
+              <h1 className="font-headline-md text-headline-md font-bold text-on-surface">
+                Nengi's Precision Ledger
+              </h1>
+              <p className="text-secondary text-body-md mt-xs">Financial Admin</p>
+            </div>
+          </div>
         </div>
 
         {/* Navigation Links */}

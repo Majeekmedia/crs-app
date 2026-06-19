@@ -84,10 +84,9 @@ export async function GET(request: NextRequest) {
       : 0;
 
     const cycles = [];
-    // Show cycles from current cycle onwards (including some future cycles for advance)
-    const maxCycleToShow = Math.min(plan.total_slots, currentCycle + 5);
-
-    for (let c = Math.max(1, currentCycle); c <= maxCycleToShow; c++) {
+    // Show ALL cycles from 1 to total_slots so backdated plans can allocate to past cycles.
+    // Past cycles are those before currentCycle, future cycles are after.
+    for (let c = 1; c <= plan.total_slots; c++) {
       // Sum allocations for this cycle and plan from this member
       const cycleAllocations = memberAllocations
         ?.filter((a) => a.cycle_number === c)
@@ -100,6 +99,8 @@ export async function GET(request: NextRequest) {
         contribution: memberCycleContribution,
         paid: cycleAllocations,
         outstanding: cycleOutstanding,
+        isPast: c < currentCycle,
+        isFuture: c > currentCycle,
       });
     }
 

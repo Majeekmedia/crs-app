@@ -524,6 +524,7 @@ export default async function PlanDetailPage({
                     const payeeName = payee
                       ? (payee.members as unknown as { name: string })?.name ?? `Slot #${slotNum}`
                       : `Slot #${slotNum}`;
+                    const payoutRecorded = payouts.some((p) => p.cycle_number === cycleNum);
 
                     return (
                       <div
@@ -531,19 +532,29 @@ export default async function PlanDetailPage({
                         className={`flex items-center gap-sm px-sm py-xs rounded-md text-body-sm ${
                           isCurrent
                             ? 'bg-primary-container text-on-primary-container'
-                            : isPast
-                            ? 'text-secondary'
                             : 'text-on-surface'
                         }`}
                       >
                         <span className="font-medium w-6">#{cycleNum}</span>
                         <span className="flex-1">{payeeName}</span>
-                        {isPast && (
+                        {payoutRecorded ? (
                           <span className="material-symbols-outlined text-[14px]" style={{ color: '#10B981' }}>check_circle</span>
-                        )}
-                        {isCurrent && (
+                        ) : isCurrent ? (
                           <span className="material-symbols-outlined text-[14px]" style={{ color: '#6366F1' }}>arrow_right</span>
-                        )}
+                        ) : isPast && payee ? (
+                          <form action={processPayout}>
+                            <input type="hidden" name="plan_id" value={plan.id} />
+                            <input type="hidden" name="member_id" value={payee.member_id} />
+                            <input type="hidden" name="cycle_number" value={cycleNum} />
+                            <input type="hidden" name="amount" value={plan.payout_amount} />
+                            <button
+                              type="submit"
+                              className="text-label-sm text-primary hover:text-primary-container px-sm py-0.5 rounded hover:bg-primary/5 transition-colors font-medium border border-primary/20"
+                            >
+                              Record Payout
+                            </button>
+                          </form>
+                        ) : null}
                       </div>
                     );
                   })}
