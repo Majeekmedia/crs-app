@@ -76,11 +76,10 @@ export default function PwaRegister() {
     <div className="fixed bottom-20 left-4 right-4 md:left-auto md:right-4 md:bottom-4 md:max-w-sm z-50 bg-primary text-on-primary rounded-xl shadow-lg p-md flex items-start gap-sm animate-slide-up">
       <div className="flex-1 min-w-0">
         <p className="text-body-sm font-medium">Install App</p>
-        <p className="text-body-sm opacity-80">Add to home screen for quick access</p>
+        <p className="text-body-sm opacity-80">Install as app for offline access</p>
         {showHint && (
           <p className="text-body-xs opacity-90 mt-1 leading-tight">
-            Tap your browser menu → <strong>Install app</strong> or{' '}
-            <strong>Add to Home Screen</strong>
+            Opening browser menu → <strong>Install app</strong> adds it to your app list
           </p>
         )}
       </div>
@@ -88,7 +87,7 @@ export default function PwaRegister() {
         onClick={handleInstall}
         className="bg-white text-primary px-md py-sm rounded-lg text-body-sm font-medium hover:bg-surface-container-lowest transition-colors whitespace-nowrap shrink-0 mt-0.5"
       >
-        {installPrompt ? 'Install' : 'Ready'}
+        Install
       </button>
       <button
         onClick={handleDismiss}

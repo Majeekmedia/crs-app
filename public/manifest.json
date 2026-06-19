@@ -3,6 +3,7 @@
   "short_name": "Precision Ledger",
   "description": "Contribution Reconciliation System for ROSCA groups",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#F8FAFC",
   "theme_color": "#14213d",
