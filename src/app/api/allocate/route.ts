@@ -53,12 +53,13 @@ export async function POST(request: NextRequest) {
 
           const perCycleLimit = contribution * Math.max(1, slotCount ?? 1);
 
-          // Get existing allocations for this cycle
+          // Get existing allocations for this cycle from this member only
           const { data: existingAllocations } = await supabase
             .from('payment_allocations')
-            .select('amount_allocated')
+            .select('amount_allocated, payments!inner(member_id)')
             .eq('plan_id', alloc.plan_id)
-            .eq('cycle_number', alloc.cycle_number);
+            .eq('cycle_number', alloc.cycle_number)
+            .eq('payments.member_id', memberId);
 
           const existingTotal = existingAllocations
             ?.reduce((sum, a) => sum + parseFloat(String(a.amount_allocated)), 0) ?? 0;
@@ -69,6 +70,12 @@ export async function POST(request: NextRequest) {
             const excess = newTotal - perCycleLimit;
             excessToBalance += excess;
             amountToAllocate -= excess;
+          }
+
+          // Guard: skip allocation if amount would be zero or negative
+          // (e.g. when existing allocations already meet the per-cycle limit)
+          if (amountToAllocate <= 0) {
+            continue;
           }
         }
       }

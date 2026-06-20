@@ -163,7 +163,7 @@ export default function AllocationModal({
         </div>
 
         {/* Body */}
-        <div className="p-md md:p-lg flex-grow overflow-y-auto max-h-[60vh]">
+        <div className="p-md md:p-lg flex-grow overflow-y-auto max-h-[75vh] md:max-h-[65vh]">
           {/* Payment Summary */}
           <div className="bg-surface border border-outline-variant rounded-lg p-md mb-xl flex flex-col md:flex-row md:items-center md:justify-between gap-sm">
             <div className="flex items-center gap-md">
@@ -228,19 +228,19 @@ export default function AllocationModal({
                   return (
                     <div key={plan.plan_id} className="border border-outline-variant rounded-lg overflow-hidden">
                       {/* Plan Header */}
-                      <div className="bg-surface-bright px-md py-sm flex flex-col md:flex-row md:justify-between md:items-center gap-xs border-b border-outline-variant">
-                        <div className="min-w-0">
-                          <p className="text-body-sm md:text-body-md text-on-surface font-medium truncate">{plan.plan_name}</p>
+                      <div className="bg-surface-bright px-md py-sm flex flex-col md:flex-row md:items-start gap-y-sm md:gap-x-md border-b border-outline-variant">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-body-sm md:text-body-md text-on-surface font-medium break-words">{plan.plan_name}</p>
                           <p className="text-label-sm text-secondary mt-xs">
                             Cycle {plan.current_cycle}/{plan.total_slots} &middot;{' '}
                             {formatCurrency(plan.contribution_amount)}/slot{plan.slot_count && plan.slot_count > 1 ? ` · ${plan.slot_count} slots` : ''}
                           </p>
                         </div>
-                        <div className="text-right shrink-0">
+                        <div className="text-left md:text-right shrink-0 self-start">
                           <p className="text-numeric-data text-on-surface text-body-sm md:text-body-md">
                             {formatCurrency(planTotalAllocated)}
                           </p>
-                          <p className="text-label-sm text-secondary mt-xs">
+                          <p className="text-label-sm text-secondary">
                             of {formatCurrency(plan.outstanding)} outstanding
                           </p>
                         </div>
@@ -270,16 +270,16 @@ export default function AllocationModal({
                             : null;
 
                           return (
-                            <div key={key} className={`px-md py-sm ${rowBg}`}>
+                            <div key={key} className={`px-md py-1.5 ${rowBg}`}>
                               {/* Cycle header - wrap on mobile */}
-                              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-xs gap-xs">
-                                <div className="flex items-center gap-sm min-w-0">
+                              <div className="flex flex-row items-center justify-between gap-1 mb-0.5 flex-wrap">
+                                <div className="flex items-center gap-1 min-w-0 flex-wrap">
                                   {badge && (
                                     <span className={`material-symbols-outlined text-[16px] shrink-0 ${badge.color}`} title={badge.label}>
                                       {badge.icon}
                                     </span>
                                   )}
-                                  <span className="text-body-sm md:text-body-md text-on-surface font-medium whitespace-nowrap">
+                                  <span className="text-body-sm text-on-surface font-medium whitespace-nowrap">
                                     Cycle {cycle.cycle_number}
                                   </span>
                                   {cycle.paid > 0 && (
@@ -288,14 +288,14 @@ export default function AllocationModal({
                                     </span>
                                   )}
                                 </div>
-                                <div className="text-label-sm text-secondary shrink-0">
-                                  Outstanding: {formatCurrency(cycle.outstanding)}
-                                </div>
+                                <span className="text-label-sm text-secondary shrink-0">
+                                  {formatCurrency(cycle.outstanding)} outstanding
+                                </span>
                               </div>
-                              {/* Allocation input - stack on mobile */}
-                              <div className="flex flex-col sm:flex-row sm:items-center gap-sm">
-                                <span className="text-label-sm text-secondary whitespace-nowrap">Allocate:</span>
-                                <div className="relative flex-1 w-full sm:w-auto">
+                              {/* Allocation input - inline on all screens */}
+                              <div className="flex flex-row items-center gap-1.5 flex-wrap">
+                                <span className="text-label-sm text-secondary shrink-0">Allocate:</span>
+                                <div className="relative min-w-[80px] max-w-[140px] grow">
                                   <input
                                     type="number"
                                     min="0"
@@ -306,28 +306,26 @@ export default function AllocationModal({
                                       const val = parseFloat(e.target.value);
                                       handleAllocationChange(key, isNaN(val) ? 0 : Math.max(0, Math.min(val, cycle.outstanding + allocValue)));
                                     }}
-                                    className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-sm py-1.5 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                    className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-2 py-1 text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                     aria-label={`Allocate to ${plan.plan_name} Cycle ${cycle.cycle_number}`}
                                   />
                                 </div>
-                                <div className="flex items-center gap-sm shrink-0">
-                                  <span className="text-label-sm text-secondary whitespace-nowrap">
-                                    / {formatCurrency(cycle.outstanding)}
-                                  </span>
-                                  {cycle.outstanding > 0 && (
-                                    <button
-                                      type="button"
-                                      onClick={() => handleAllocationChange(key, Math.min(cycle.outstanding, cycle.outstanding + allocValue))}
-                                      className="text-label-sm text-primary hover:text-primary-container px-sm py-1 rounded hover:bg-primary/5 transition-colors font-medium"
-                                    >
-                                      Max
-                                    </button>
-                                  )}
-                                </div>
+                                <span className="text-label-sm text-secondary shrink-0">
+                                  / {formatCurrency(cycle.outstanding)}
+                                </span>
+                                {cycle.outstanding > 0 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleAllocationChange(key, Math.min(cycle.outstanding, cycle.outstanding + allocValue))}
+                                    className="text-label-sm text-primary hover:text-primary-container px-1.5 py-0.5 rounded hover:bg-primary/5 transition-colors font-medium"
+                                  >
+                                    Max
+                                  </button>
+                                )}
                               </div>
                               {cycle.outstanding === 0 && cycle.paid > 0 && (
-                                <p className="text-label-sm text-tertiary mt-xs flex items-center gap-xs">
-                                  <span className="material-symbols-outlined text-[16px]">check_circle</span>
+                                <p className="text-label-sm text-tertiary mt-0.5 flex items-center gap-0.5">
+                                  <span className="material-symbols-outlined text-[14px]">check_circle</span>
                                   Fully paid
                                 </p>
                               )}

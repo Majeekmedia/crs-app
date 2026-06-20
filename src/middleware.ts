@@ -29,8 +29,13 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // Allow API routes through — Supabase RLS handles auth there
-  if (pathname.startsWith('/api')) {
+  // Allow API routes and PWA static assets through
+  if (pathname.startsWith('/api') || pathname.startsWith('/icons/')) {
+    return response;
+  }
+
+  // Allow manifest.json and sw.js without auth (needed for PWA installability)
+  if (pathname === '/manifest.json' || pathname === '/sw.js') {
     return response;
   }
 
@@ -53,5 +58,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon\\.ico|manifest\\.json|sw\\.js|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
 };
